@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0edd3b63a82ac24c93c39b25fe6c3ca, type: 3}
   m_Name: MonsterConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfig
-  hp: 0
+  entries:
+  - id: 1
+    prefab: {fileID: 2156231962596082936, guid: 2130618c10948ec4785e9ad6927b7a62, type: 3}
+    maxHp: 100
+    moveSpeed: 1
+  - id: 
+    prefab: {fileID: 0}
+    maxHp: 0
+    moveSpeed: 0
