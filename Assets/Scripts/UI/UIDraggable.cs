@@ -15,7 +15,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [Header("放在 Player 附近判定（屏幕像素）")]
     [SerializeField] private float _playerDropRadius = 80f;
 
-    private TopoComponent _topoComponent;
+    private Composable _composable;
 
     private RectTransform _rectTransform;
     private Canvas _canvas;
@@ -35,16 +35,16 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             CheckSetup();
     }
 
-    /// <summary>设置当前存储的 TopoComponent。</summary>
-    public void SetTopoComponent(TopoComponent topoComponent)
+    /// <summary>设置当前存储的 Composable。</summary>
+    public void SetComposable(Composable composable)
     {
-        _topoComponent = topoComponent;
+        _composable = composable;
     }
 
-    /// <summary>获取当前存储的 TopoComponent。</summary>
-    public TopoComponent GetTopoComponent()
+    /// <summary>获取当前存储的 Composable。</summary>
+    public Composable GetComposable()
     {
-        return _topoComponent;
+        return _composable;
     }
 
     /// <summary>检查拖拽能否被触发，缺配置时在 Console 里打一次提示。</summary>
