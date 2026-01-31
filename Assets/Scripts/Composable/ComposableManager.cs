@@ -9,6 +9,8 @@ public class ComposableManager : MonoBehaviour
 
     string playerTopoString = "";
 
+    float PLAYER_NEAR_WORLD_RADIUS = GlobalSetting.PLAYER_NEAR_WORLD_RADIUS;
+
     [SerializeField] AllComposableList allComposableList;
 
     Dictionary<int, Composable> composableConfigDictCache = new Dictionary<int, Composable>();
@@ -82,7 +84,7 @@ public class ComposableManager : MonoBehaviour
                     }
                 }
                 obj.transform.SetParent(player.ComposableParent);
-                obj.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+                obj.transform.localPosition = new Vector3((pos.x-0.5f)*PLAYER_NEAR_WORLD_RADIUS, (pos.y-0.5f)*PLAYER_NEAR_WORLD_RADIUS, 0);
                 obj.transform.localRotation = Quaternion.Euler(0, 0, rot);
 
                 var ele = new Element("");
