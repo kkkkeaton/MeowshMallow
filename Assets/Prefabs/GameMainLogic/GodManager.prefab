@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1530553126413192686}
   - component: {fileID: -4692011906861201405}
   - component: {fileID: 8733166126312369298}
+  - component: {fileID: 495793632719394219}
   m_Layer: 0
   m_Name: GodManager
   m_TagString: Untagged
@@ -103,3 +104,17 @@ MonoBehaviour:
   spawnOffsetNear: 3
   spawnOffsetFar: 12
   enableDebugLogOnSpawn: 1
+  testComposableTypeId: 1
+--- !u!114 &495793632719394219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4391013242849191029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a57bf0d6b44d9a408eb08dcdcae986c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ComposableManager
+  allComposableList: {fileID: 11400000, guid: 0e5e8e808c832314cbcba92d201127be, type: 2}

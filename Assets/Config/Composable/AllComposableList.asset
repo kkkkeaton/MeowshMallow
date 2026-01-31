@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f35533cffefdd624a89a22b72362a432, type: 3}
+  m_Name: AllComposableList
+  m_EditorClassIdentifier: Assembly-CSharp::AllComposableList
+  composables:
+  - {fileID: 11400000, guid: e9f0936765cf0914f9cc70053488757c, type: 2}

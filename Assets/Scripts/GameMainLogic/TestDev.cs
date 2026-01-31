@@ -15,13 +15,22 @@ public class TestDev : MonoBehaviour
     [Tooltip("生成后是否为该怪物的 MonsterAI 开启调试日志（状态切换会打印到 Console）")]
     [SerializeField] private bool enableDebugLogOnSpawn = true;
 
+    [Header("Composable 生成测试")]
+    [Tooltip("在检视器输入要生成的 Composable 类型 id，再点击下方按钮生成")]
+    [SerializeField] private int testComposableTypeId = 1;
+
     private MonsterManager monsterManager;
+    private ComposableManager composableManager;
 
     void Start()
     {
         monsterManager = FindFirstObjectByType<MonsterManager>();
         if (monsterManager == null && God.Instance != null)
             monsterManager = God.Instance.Get<MonsterManager>();
+
+        composableManager = FindObjectOfType<ComposableManager>();
+        if (composableManager == null && God.Instance != null)
+            composableManager = God.Instance.Get<ComposableManager>();
 
         if (monsterManager == null)
             Debug.LogWarning("[TestDev] 未找到 MonsterManager，请确保场景中存在已配置 MonsterConfig 的 MonsterManager。");
@@ -60,6 +69,15 @@ public class TestDev : MonoBehaviour
     {
         return monsterManager;
     }
+
+    /// <summary>为 Editor 或反射获取 ComposableManager 提供公共方法。</summary>
+    public ComposableManager GetComposableManager()
+    {
+        return composableManager;
+    }
+
+    /// <summary>为 Editor 按钮使用的 Composable 类型 id。</summary>
+    public int GetTestComposableTypeId() => testComposableTypeId;
 }
 
 #if UNITY_EDITOR
@@ -89,6 +107,29 @@ public class TestDevEditor : Editor
                     monsterBase.DebugTopo();
             }
             Debug.Log($"[TestDevEditor] 已为 {aliveMonsters.Count} 个怪物调用 DebugTopo。");
+        }
+
+        if (GUILayout.Button("生成 Composable（使用上方类型 id）"))
+        {
+            var composableManager = testDev.GetComposableManager() ?? Object.FindObjectOfType<ComposableManager>();
+            if (composableManager == null)
+            {
+                Debug.LogWarning("[TestDevEditor] 未找到 ComposableManager。请确保场景中存在 ComposableManager，或进入 Play 模式后再点按钮。");
+                return;
+            }
+            int typeId = testDev.GetTestComposableTypeId();
+            try
+            {
+                composableManager.GenerateItemByTypeId(typeId, obj =>
+                {
+                    if (obj != null)
+                        Debug.Log($"[TestDevEditor] 已生成 Composable id={typeId}: {obj.name}");
+                });
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[TestDevEditor] 生成 Composable id={typeId} 失败: {e.Message}。请检查 Resources/AllComposableList 中是否存在该 id 的配置。");
+            }
         }
     }
 }
