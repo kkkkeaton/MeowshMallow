@@ -1,20 +1,21 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CompareLogicCore()
+public static class CompareLogicCore
 {
     public static float TypeFactor = 1 ;
     public static float PosFactor = 1 ;
     public static float RotFactor  = 1 ;
-    public float Compare(Element a_element,Element b_element)
+    public static float Compare(Element a_element,Element b_element)
     {
         //类型检测
         float typeCompareResult = 0;
-        MaskCoreConfig.TryGetValue(a_element.type,b_element.type,typeCompareResult);
+        MaskCoreConfig.TryGetValue(a_element.type, b_element.type, out typeCompareResult);
         
         //位置检测
         float posCompareReslt = 0;
-        float sub = Vector2.Distance(a_element.pos - b_element.pos);
+        float sub = Vector2.Distance(a_element.pos, b_element.pos);
         posCompareReslt = 1.5f - sub;
 
         //旋转角度检测
@@ -25,10 +26,10 @@ public static class CompareLogicCore()
             float mineRot = a_element.rot;
             float otherRot = b_element.rot;
             float temp = 0;
-            foreach(float seg in a_element.rotList)
+            foreach (float seg in a_element.rotList)
             {
-                temp = math.abs(mineRot+seg - otherRot)
-                minRotSub = math.min(minRotSub,temp);
+                temp = Mathf.Abs(mineRot + seg - otherRot);
+                minRotSub = Mathf.Min(minRotSub, temp);
             }
             rotCompareResult = 1 - minRotSub / 360;
         }
@@ -97,7 +98,7 @@ public class MaskCoreUnit
 }
 
 
-class Element
+public class Element
 {
     public int type;
     public Vector2 pos;
