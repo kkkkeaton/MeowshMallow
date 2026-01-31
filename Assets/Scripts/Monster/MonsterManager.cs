@@ -8,6 +8,12 @@ public class MonsterManager : MonoBehaviour
 
     private readonly List<MonsterBase> aliveMonsters = new List<MonsterBase>();
 
+    private void Awake()
+    {
+        if (God.Instance != null)
+            God.Instance.Add(this);
+    }
+
     /// <summary>在指定位置生成指定 ID 的怪物，并加入存活列表、订阅死亡回调。失败返回 null。</summary>
     public MonsterBase SpawnMonster(string id, Vector2 position)
     {
@@ -17,6 +23,9 @@ public class MonsterManager : MonoBehaviour
 
         aliveMonsters.Add(monster);
         monster.OnDeath += OnMonsterDeath;
+        var ai = monster.GetComponent<MonsterAI>();
+        if (ai != null)
+            ai.SetConfig(config);
         return monster;
     }
 

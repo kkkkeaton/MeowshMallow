@@ -6,14 +6,26 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "MonsterConfig", menuName = "Scriptable Objects/MonsterConfig")]
 public class MonsterConfig : ScriptableObject
 {
-    /// <summary>单条怪物配置：ID、预制体、最大血量、移速（Unity 可序列化，用于 Inspector 列表）。</summary>
+    /// <summary>单条怪物配置：ID、预制体、血量、移速、索敌与识破相关参数。</summary>
     [Serializable]
     public class MonsterConfigEntry
     {
         public string id;           // 怪物类型 ID
-        public GameObject prefab;   // 2D 怪物预制体（需挂 MonsterBase）
+        public GameObject prefab;  // 2D 怪物预制体（需挂 MonsterBase）
         public float maxHp = 100f;  // 最大血量
         public float moveSpeed = 1f; // 移动速度
+
+        [Header("索敌与移动")]
+        [Tooltip("发现玩家时的检测距离")]
+        public float detectionRange = 8f;
+        [Tooltip("发现玩家后向玩家移动并停下的目标距离（与玩家的距离）")]
+        public float approachDistance = 3f;
+
+        [Header("识破值")]
+        [Tooltip("面向玩家观察时，识破值每秒增加量")]
+        public float detectionFillRatePerSecond = 20f;
+        [Tooltip("识破值满值，达到后会增加玩家在该类型怪物中的暴露值")]
+        public float detectionMaxValue = 100f;
     }
 
     [SerializeField] private List<MonsterConfigEntry> entries = new List<MonsterConfigEntry>();
@@ -50,6 +62,34 @@ public class MonsterConfig : ScriptableObject
     {
         BuildCache();
         return _cache != null && _cache.TryGetValue(id, out var e) ? e.moveSpeed : 0f;
+    }
+
+    /// <summary>根据怪物 ID 获取索敌检测距离，未找到返回 0。</summary>
+    public float GetDetectionRange(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.detectionRange : 0f;
+    }
+
+    /// <summary>根据怪物 ID 获取靠近玩家的目标距离，未找到返回 0。</summary>
+    public float GetApproachDistance(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.approachDistance : 0f;
+    }
+
+    /// <summary>根据怪物 ID 获取识破值每秒增加量，未找到返回 0。</summary>
+    public float GetDetectionFillRatePerSecond(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.detectionFillRatePerSecond : 0f;
+    }
+
+    /// <summary>根据怪物 ID 获取识破值满值，未找到返回 100。</summary>
+    public float GetDetectionMaxValue(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.detectionMaxValue : 100f;
     }
 
     /// <summary>根据怪物 ID 获取完整配置条目，未找到返回 null。</summary>

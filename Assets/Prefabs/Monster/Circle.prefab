@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4121635164666919727}
   - component: {fileID: 3883497001866163314}
+  - component: {fileID: 9047643542761448007}
+  - component: {fileID: 8265951336798460210}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
@@ -91,3 +93,32 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &9047643542761448007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2156231962596082936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc224202678c986438c9aa79a915bbf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterBase
+  monsterId: 1
+  maxHp: 100
+  moveSpeed: 1
+--- !u!114 &8265951336798460210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2156231962596082936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed2769c661afa75cb86d64a567ee5dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterAI
+  config: {fileID: 11400000, guid: 7a26980e2c0ae544686e39505ac70d40, type: 2}
+  playerTag: Player

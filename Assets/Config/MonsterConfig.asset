@@ -16,8 +16,8 @@ MonoBehaviour:
   - id: 1
     prefab: {fileID: 2156231962596082936, guid: 2130618c10948ec4785e9ad6927b7a62, type: 3}
     maxHp: 100
-    moveSpeed: 1
-  - id: 
-    prefab: {fileID: 0}
-    maxHp: 0
-    moveSpeed: 0
+    moveSpeed: 2
+    detectionRange: 8
+    approachDistance: 3
+    detectionFillRatePerSecond: 20
+    detectionMaxValue: 100

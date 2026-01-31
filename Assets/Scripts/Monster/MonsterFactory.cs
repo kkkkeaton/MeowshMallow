@@ -16,6 +16,7 @@ public static class MonsterFactory
             : Object.Instantiate(prefab, pos, Quaternion.identity);
 
         var monster = instance.GetComponent<MonsterBase>();
+        Debug.Log($"MonsterFactory: {monster}");
         if (monster != null)
         {
             var maxHp = config.GetMaxHp(id);

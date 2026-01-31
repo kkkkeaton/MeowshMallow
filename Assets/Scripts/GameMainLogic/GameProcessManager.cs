@@ -128,7 +128,7 @@ public class GameProcessManager : MonoBehaviour
         // 向 God 注册，方便全局获取
         var god = God.Instance;
         if (god != null)
-            god.Register(this as GameProcessManager);
+            god.Add(this as GameProcessManager);
     }
 
     private void OnDestroy()
