@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8be94c17574734eb7084874ed8608f, type: 3}
+  m_Name: Bar
+  m_EditorClassIdentifier: Assembly-CSharp::TopoComponent
+  typeId: 1
+  prefab: {fileID: 7642359609434466413, guid: b9243c29ef1abe0479b5f4754824a9e4, type: 3}
+  considerRotation: 1
+  rotationSimilarList:
+  - 180
