@@ -60,6 +60,7 @@ public class ComposableManager : MonoBehaviour
         {
             composableMono.Init(composable, genId,pos,rot);
             composableMonoDict[genId] = composableMono;
+            playerComposableList.Add(composableMono);
         }
         onGenerated?.Invoke(obj);
     }
@@ -99,7 +100,7 @@ public class ComposableManager : MonoBehaviour
         });
     }
 
-    public void DeletePlayerComposable(int genId)
+    public void DeletePlayerComposable(int genId,bool clearAllFlag = false)
     {
         var composableMono = composableMonoDict[genId];
         Composable composable;
@@ -114,6 +115,10 @@ public class ComposableManager : MonoBehaviour
         }
         if (composableMono != null)
         {
+            if (!clearAllFlag)
+            {
+                playerComposableList.Remove(composableMono);
+            }
             composableMonoDict.Remove(genId);
             GameObject.Destroy(composableMono.gameObject);
             Debug.Log("删除Composable成功,genId:" + genId);
@@ -126,7 +131,7 @@ public class ComposableManager : MonoBehaviour
         foreach (var composableMono in playerComposableList)
         {
             var genId = composableMono.GetGenId();
-            DeletePlayerComposable(genId);
+            DeletePlayerComposable(genId,true);
         }
         playerComposableList.Clear();
     }

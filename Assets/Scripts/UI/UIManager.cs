@@ -38,9 +38,26 @@ public class UIManager : MonoBehaviour
             _mainUIInstance = CreateUI(_mainUIPrefab);
             RefreshExposedValueSlider();
             RefreshRangeHintRefs();
+            BindTBtnClearComposable();
         }
         SetPickableHintVisible(false);
         SetAssassinationHintVisible(false);
+    }
+
+    /// <summary>从 MainUI 中查找名为 "T_Btn" 的节点，为其上的按钮绑定点击时调用 ClearAllPlayerComposable。</summary>
+    private void BindTBtnClearComposable()
+    {
+        if (_mainUIInstance == null) return;
+        Transform tBtn = _mainUIInstance.transform.Find("Canvas/Bottom/LeftPart/T_Btn");
+        if (tBtn == null) return;
+        var button = tBtn.GetComponent<Button>();
+        if (button == null) return;
+        button.onClick.AddListener(OnTBtnClicked);
+    }
+
+    private void OnTBtnClicked()
+    {
+        God.Instance?.Get<ComposableManager>()?.ClearAllPlayerComposable();
     }
 
     /// <summary>从 MainUI 子物体中按名称查找「E」「F」并缓存为范围提示引用。</summary>
