@@ -13,11 +13,4 @@ MonoBehaviour:
   m_Name: MonsterConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfig
   entries:
-  - id: 1
-    prefab: {fileID: 2156231962596082936, guid: 2130618c10948ec4785e9ad6927b7a62, type: 3}
-    maxHp: 100
-    moveSpeed: 2
-    detectionRange: 8
-    approachDistance: 3
-    detectionFillRatePerSecond: 20
-    detectionMaxValue: 100
+  - {fileID: 11400000, guid: b061f89e3d08814479babc60eff3cef7, type: 2}

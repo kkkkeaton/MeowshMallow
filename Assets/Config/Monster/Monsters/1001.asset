@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df77cd93df5dd34381a0feb123e650f, type: 3}
   m_Name: 1001
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfigData
-  id: 
-  prefab: {fileID: 0}
+  id: 1001
+  prefab: {fileID: 2156231962596082936, guid: 2130618c10948ec4785e9ad6927b7a62, type: 3}
   maxHp: 100
   moveSpeed: 1
   detectionRange: 8
