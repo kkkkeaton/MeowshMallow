@@ -70,4 +70,11 @@ public class MonsterManager : MonoBehaviour
 
     /// <summary>返回当前存活怪物列表的只读视图。</summary>
     public IReadOnlyList<MonsterBase> GetAliveMonsters() => aliveMonsters;
+
+    public bool CheckIsSameKind<T1, T2>(T1 judger, T2 beJudged, float threshold) where T1 : IMaskInfoJudger where T2 : IMaskInfoProvider
+    {
+        if (judger == null || beJudged == null) return false;
+        var score = judger.JudgeMaskInfo(beJudged.GetMaskInfo());
+        return score >= threshold;
+    }
 }

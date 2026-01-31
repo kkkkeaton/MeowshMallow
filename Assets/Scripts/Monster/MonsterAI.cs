@@ -67,15 +67,19 @@ public class MonsterAI : MonoBehaviour
     /// <summary>玩家与怪物拓扑匹配度是否 >= 同类阈值（视作同类则不索敌、不累积识破）。</summary>
     private bool IsPlayerSameType()
     {
-        var playerMask = _playerMaskInfoProvider?.GetMaskInfo();
-        if (playerMask == null) 
-        {
-            Debug.LogWarning($"[MonsterAI] {gameObject.name} 未找到玩家，索敌与移动将不生效。请为玩家 GameObject 设置 IMaskInfoProvider 组件。");
-            return false;
-        };
-        float similarity = _monster.JudgeMaskInfo(playerMask);
+        // var playerMask = _playerMaskInfoProvider?.GetMaskInfo();
+        // if (playerMask == null) 
+        // {
+        //     Debug.LogWarning($"[MonsterAI] {gameObject.name} 未找到玩家，索敌与移动将不生效。请为玩家 GameObject 设置 IMaskInfoProvider 组件。");
+        //     return false;
+        // };
+        // float similarity = _monster.JudgeMaskInfo(playerMask);
+        // Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配度: {similarity}");
+        // return similarity >= _sameTypeThreshold;
+
+        var similarity = God.Instance.Get<MonsterManager>().CheckIsSameKind(_monster, _playerMaskInfoProvider, _sameTypeThreshold);
         Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配度: {similarity}");
-        return similarity >= _sameTypeThreshold;
+        return similarity;
     }
 
     /// <summary>运行时注入配置（如由 MonsterManager 生成后调用），便于预制体不绑定 config。</summary>
