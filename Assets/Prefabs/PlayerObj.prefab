@@ -240,6 +240,49 @@ MonoBehaviour:
   normalizeMovement: 1
   acceleration: 20
   deceleration: 25
+  moveSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.15
+      value: 1
+      inSlope: 1.1679133
+      outSlope: 1.1679133
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.6984127
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.65
+      value: 0.5
+      inSlope: -2.5909677
+      outSlope: -2.5909677
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.22448999
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveCurveOneTime: 1
 --- !u!114 &3157746282667376504
 MonoBehaviour:
   m_ObjectHideFlags: 0
