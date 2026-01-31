@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CompareLogicCore
+static class CompareLogicCore
 {
     public static float TypeFactor = 1 ;
     public static float PosFactor = 1 ;
@@ -74,6 +74,9 @@ public class MaskCore
     {
         return 1;
     }
+
+    public int UnitCount => maskUnits?.Count ?? 0;
+    public MaskCoreUnit GetUnit(int index) => maskUnits[index];
 }
 
 public class MaskCoreUnit
@@ -95,6 +98,8 @@ public class MaskCoreUnit
 
     }
 
+    public int ElementCount => elements?.Count ?? 0;
+    public Element GetElement(int index) => elements[index];
 }
 
 

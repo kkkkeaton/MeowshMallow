@@ -21,7 +21,8 @@ public static class MonsterFactory
         {
             var maxHp = config.GetMaxHp(id);
             var moveSpeed = config.GetMoveSpeed(id);
-            monster.Init(id, maxHp, moveSpeed);
+            var monserTopoConfig = config.GetTopoConfig(id);
+            monster.Init(id, maxHp, moveSpeed,monserTopoConfig);
         }
 
         return monster;

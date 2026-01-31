@@ -33,6 +33,11 @@ public class MonsterConfigData : ScriptableObject
     [Tooltip("识破值满值，达到后会增加玩家在该类型怪物中的暴露值")]
     [SerializeField] private float detectionMaxValue = 100f;
 
+    [Header("怪物拓扑")]
+    [Tooltip("怪物的拓扑配置，配置规则问虾丸")]
+    [SerializeField] private string monsterTopoConfig = "";
+
+
     /// <summary>怪物类型 ID。</summary>
     public string Id => id;
 
@@ -56,4 +61,7 @@ public class MonsterConfigData : ScriptableObject
 
     /// <summary>识破值满值。</summary>
     public float DetectionMaxValue => detectionMaxValue;
+
+    /// <summary>怪物拓扑配置</summary>
+    public string MonsterTopoConfig => monsterTopoConfig;
 }

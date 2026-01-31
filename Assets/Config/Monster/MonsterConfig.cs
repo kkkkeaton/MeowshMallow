@@ -81,4 +81,12 @@ public class MonsterConfig : ScriptableObject
         BuildCache();
         return _cache != null && _cache.TryGetValue(id, out var e) ? e : null;
     }
+
+    /// <summary>获取怪物拓扑配置字符串</summary>
+    public string GetTopoConfig(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.MonsterTopoConfig : "";
+    }
+
 }
