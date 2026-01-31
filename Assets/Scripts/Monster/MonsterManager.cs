@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>怪物管理器：持有配置、调用工厂生成怪物、维护存活列表，并在怪物死亡时从列表中移除。</summary>
+/// <summary>怪物管理器：持有配置、调用工厂生成怪物、维护存活列表，并在怪物死亡时从列表中移除；支持暗杀与掉落。</summary>
 public class MonsterManager : MonoBehaviour
 {
     [SerializeField] private MonsterConfig config; // 在 Inspector 中拖入 MonsterConfig.asset
+    [Tooltip("掉落物 PickableItem 预制体（需挂 PickableItem，topo 可空，运行时由 InitWithTopo 注入）")]
+    [SerializeField] private GameObject pickableItemDropPrefab;
 
     private readonly List<MonsterBase> aliveMonsters = new List<MonsterBase>();
 
@@ -37,6 +39,35 @@ public class MonsterManager : MonoBehaviour
             mb.OnDeath -= OnMonsterDeath;
             aliveMonsters.Remove(mb);
         }
+    }
+
+    /// <summary>暗杀指定怪物：立即死亡并在其位置掉落 PickableItem（若该怪物配置了 dropComposable）。</summary>
+    public void Assassinate(MonsterBase monster)
+    {
+        if (monster == null || !monster.IsAlive() || config == null) return;
+
+        string id = monster.GetId();
+        Vector2 position = monster.transform.position;
+        Composable dropComposable = config.GetDropComposable(id);
+
+        monster.Die();
+
+        if (dropComposable != null && dropComposable.topoComponent != null)
+            SpawnDrop(position, dropComposable);
+    }
+
+    /// <summary>在指定位置生成一个 PickableItem 掉落物，使用 Composable 的 topoComponent。</summary>
+    public void SpawnDrop(Vector2 position, Composable dropComposable)
+    {
+        if (dropComposable == null || dropComposable.topoComponent == null || pickableItemDropPrefab == null) return;
+
+        var pickable = pickableItemDropPrefab.GetComponent<PickableItem>();
+        if (pickable == null) return;
+
+        GameObject instance = Instantiate(pickableItemDropPrefab, position, Quaternion.identity, transform);
+        var item = instance.GetComponent<PickableItem>();
+        if (item != null)
+            item.InitWithTopo(dropComposable.topoComponent);
     }
 
     /// <summary>返回当前存活怪物列表的只读视图。</summary>

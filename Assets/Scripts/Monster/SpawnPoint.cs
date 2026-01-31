@@ -27,19 +27,32 @@ public class SpawnPoint : MonoBehaviour
     private void Start()
     {
         if (string.IsNullOrEmpty(playerTag)) playerTag = "Player";
+        TryFindPlayer();
+        TryFindMonsterManager();
+    }
+
+    /// <summary>尝试查找玩家（地图与玩家异步生成时可能延后出现，会持续重试）。</summary>
+    private void TryFindPlayer()
+    {
+        if (_player != null) return;
         var go = GameObject.FindWithTag(playerTag);
         if (go != null) _player = go.transform;
-        else Debug.LogWarning($"[SpawnPoint] {gameObject.name} 未找到 Tag=\"{playerTag}\" 的玩家，刷怪点不会触发。");
+    }
 
+    /// <summary>尝试查找 MonsterManager。</summary>
+    private void TryFindMonsterManager()
+    {
+        if (_monsterManager != null) return;
         _monsterManager = FindObjectOfType<MonsterManager>();
         if (_monsterManager == null && God.Instance != null)
             _monsterManager = God.Instance.Get<MonsterManager>();
-        if (_monsterManager == null)
-            Debug.LogWarning($"[SpawnPoint] {gameObject.name} 未找到 MonsterManager，刷怪点无法生成怪物。");
     }
 
     private void Update()
     {
+        if (_player == null) TryFindPlayer();
+        if (_monsterManager == null) TryFindMonsterManager();
+
         if (_hasTriggered || _player == null || _monsterManager == null) return;
 
         Vector2 myPos = transform.position;
