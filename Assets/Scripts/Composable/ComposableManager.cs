@@ -23,6 +23,12 @@ public class ComposableManager : MonoBehaviour
         player = FindFirstObjectByType<Player>();
     }
 
+    /// <summary>仅按 id 生成（用于测试），pos=0、rot=0。</summary>
+    public void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
+    {
+        GenerateItemByTypeId(id, Vector2.zero, 0f, onGenerated);
+    }
+
     private void GenerateItemByTypeId(int id,Vector2 pos,float rot, Action<GameObject> onGenerated)
     {
         if (allComposableList == null)
@@ -66,7 +72,16 @@ public class ComposableManager : MonoBehaviour
         {
             if (obj != null)
             {
-                obj.transform.SetParent(player.composableParent);
+                if (player == null)
+                {
+                    player = God.Instance.Get<Player>();
+                    if (player == null)
+                    {
+                        Debug.LogError("未找到Player");
+                        return;
+                    }
+                }
+                obj.transform.SetParent(player.ComposableParent);
                 obj.transform.localPosition = new Vector3(pos.x, pos.y, 0);
                 obj.transform.localRotation = Quaternion.Euler(0, 0, rot);
 

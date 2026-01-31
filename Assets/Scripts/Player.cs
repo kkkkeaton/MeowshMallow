@@ -4,7 +4,7 @@ public class Player : MonoBehaviour,IMaskInfoProvider
 {
     MaskCore playerMaskCore = new MaskCore();
 
-    public Transform composableParent;
+    public Transform ComposableParent;
 
     public virtual MaskCore GetMaskInfo()
     {
@@ -13,7 +13,8 @@ public class Player : MonoBehaviour,IMaskInfoProvider
 
     public void Awake()
     {
-        composableParent = transform.Find("ComposableParent");
+        if (God.Instance != null)
+            God.Instance.Add(this);
     }
 
     public void Start()

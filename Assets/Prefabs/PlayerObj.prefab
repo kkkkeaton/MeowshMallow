@@ -279,4 +279,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45cd3f666d2598e20a8012991c12c6d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  composableParent: {fileID: 8847224528889694143}
+  ComposableParent: {fileID: 8847224528889694143}

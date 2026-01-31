@@ -19,6 +19,14 @@ public class TestDev : MonoBehaviour
     [Tooltip("在检视器输入要生成的 Composable 类型 id，再点击下方按钮生成")]
     [SerializeField] private int testComposableTypeId = 1;
 
+    [Header("GenPlayerNewComposable 测试")]
+    [Tooltip("拖入要挂到玩家上的 Composable 配置资产")]
+    [SerializeField] private Composable testGenComposableConfig;
+    [Tooltip("挂载点位置，建议 0～1 范围内")]
+    [SerializeField] private Vector2 testGenComposablePos = Vector2.zero;
+    [Tooltip("旋转角，0～360")]
+    [SerializeField] private float testGenComposableRot = 0f;
+
     private MonsterManager monsterManager;
     private ComposableManager composableManager;
 
@@ -78,6 +86,14 @@ public class TestDev : MonoBehaviour
 
     /// <summary>为 Editor 按钮使用的 Composable 类型 id。</summary>
     public int GetTestComposableTypeId() => testComposableTypeId;
+
+    /// <summary>GenPlayerNewComposable 测试用：配置、位置、旋转。</summary>
+    public void GetTestGenPlayerNewComposableParams(out Composable config, out Vector2 pos, out float rot)
+    {
+        config = testGenComposableConfig;
+        pos = testGenComposablePos;
+        rot = testGenComposableRot;
+    }
 }
 
 #if UNITY_EDITOR
@@ -120,15 +136,40 @@ public class TestDevEditor : Editor
             int typeId = testDev.GetTestComposableTypeId();
             try
             {
-                // composableManager.GenerateItemByTypeId(typeId, obj =>
-                // {
-                //     if (obj != null)
-                //         Debug.Log($"[TestDevEditor] 已生成 Composable id={typeId}: {obj.name}");
-                // });
+                composableManager.GenerateItemByTypeId(typeId, obj =>
+                {
+                    if (obj != null)
+                        Debug.Log($"[TestDevEditor] 已生成 Composable id={typeId}: {obj.name}");
+                });
             }
             catch (System.Exception e)
             {
                 Debug.LogWarning($"[TestDevEditor] 生成 Composable id={typeId} 失败: {e.Message}。请检查 Resources/AllComposableList 中是否存在该 id 的配置。");
+            }
+        }
+
+        EditorGUILayout.Space(4);
+        if (GUILayout.Button("测试 GenPlayerNewComposable（使用上方配置/位置/旋转）"))
+        {
+            var composableManager = testDev.GetComposableManager() ?? Object.FindObjectOfType<ComposableManager>();
+            if (composableManager == null)
+            {
+                Debug.LogWarning("[TestDevEditor] 未找到 ComposableManager。");
+                return;
+            }
+            testDev.GetTestGenPlayerNewComposableParams(out var config, out var pos, out var rot);
+            if (config == null)
+            {
+                Debug.LogWarning("[TestDevEditor] 请先在「GenPlayerNewComposable 测试」中拖入 Composable 配置。");
+                return;
+            }
+            try
+            {
+                composableManager.GenPlayerNewComposable(config, pos, rot);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[TestDevEditor] GenPlayerNewComposable 失败: {e.Message}");
             }
         }
     }
