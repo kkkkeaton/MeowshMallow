@@ -34,6 +34,11 @@ public static class MaskCoreConfig
     public static bool TryGetValue(int a, int b, out float value)
     {
         var key = Normalize(a, b);
+        if (a==b)
+        {
+            value = 1f;
+            return true;
+        }
         return PairToFloat.TryGetValue(key, out value);
     }
 

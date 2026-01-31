@@ -16,7 +16,7 @@ static class CompareLogicCore
         //位置检测
         float posCompareReslt = 0;
         float sub = Vector2.Distance(a_element.pos, b_element.pos);
-        posCompareReslt = 1.5f - sub;
+        posCompareReslt = (1.5f - sub)/1.5f;
 
         //旋转角度检测
         float rotCompareResult = 1;
@@ -33,6 +33,8 @@ static class CompareLogicCore
             }
             rotCompareResult = 1 - minRotSub / 360;
         }
+
+        Debug.Log($"typeCompareResult: {typeCompareResult}, posCompareReslt: {posCompareReslt}, rotCompareResult: {rotCompareResult}");
 
         return typeCompareResult*posCompareReslt*rotCompareResult;
 

@@ -279,4 +279,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45cd3f666d2598e20a8012991c12c6d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  playerMaskCoreString: 1@1-2@0.3325^0.619-3@1-4@74.69-5@180;1@1-2@0.6825^0.615-3@1-4@351.7-5@180;1@1-2@0.3125^0.479-3@1-4@153.3-5@180;1@1-2@0.683^0.485-3@1-4@288.1-5@180
   ComposableParent: {fileID: 8847224528889694143}
