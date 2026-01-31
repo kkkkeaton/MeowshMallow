@@ -72,6 +72,9 @@ public class GameProcessManager : MonoBehaviour
     /// <summary>玩家出生位置（来自 config）。</summary>
     private Vector3 _playerSpawnPosition;
 
+    /// <summary>当前局实例化的玩家物体，StartGame 时创建，可供其他脚本通过 Player 获取。</summary>
+    private GameObject _playerInstance;
+
     // ---------- 事件（供 UI、音效等订阅） ----------
 
     /// <summary>玩法开始时触发。</summary>
@@ -186,9 +189,17 @@ public class GameProcessManager : MonoBehaviour
 
         if (_playerPrefab != null)
         {
-            var player = Instantiate(_playerPrefab, _playerSpawnPosition, Quaternion.identity);
+            if (_playerInstance != null)
+            {
+                if (God.Instance != null)
+                    God.Instance.SetPlayer(null);
+                Destroy(_playerInstance);
+            }
+            _playerInstance = Instantiate(_playerPrefab, _playerSpawnPosition, Quaternion.identity);
+            if (God.Instance != null)
+                God.Instance.SetPlayer(_playerInstance);
             if (CameraController.Instance != null)
-                CameraController.Instance.BindTarget(player.transform);
+                CameraController.Instance.BindTarget(_playerInstance.transform);
         }
 
         OnGameStart?.Invoke();

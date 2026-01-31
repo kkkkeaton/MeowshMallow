@@ -6,8 +6,15 @@ public class God : MonoBehaviour
 {
     private static God _instance;
     private readonly Dictionary<System.Type, object> _managers = new Dictionary<System.Type, object>();
+    private GameObject _player;
 
     public static God Instance => _instance;
+
+    /// <summary>当前玩家物体。由 GameProcessManager 在 StartGame 时设置，未开始或未创建时为 null。其他脚本通过 God.Instance.Player 获取。</summary>
+    public GameObject Player => _player;
+
+    /// <summary>设置当前玩家物体（内部使用，由 GameProcessManager 在创建/替换玩家时调用）。</summary>
+    public void SetPlayer(GameObject player) => _player = player;
 
     private void Awake()
     {
