@@ -202,6 +202,9 @@ public class GameProcessManager : MonoBehaviour
                 CameraController.Instance.BindTarget(_playerInstance.transform);
         }
 
+        if (_config != null && _config.MapPrefab != null)
+            Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
+
         OnGameStart?.Invoke();
     }
 

@@ -35,6 +35,10 @@ public class GameProcessConfig : ScriptableObject
     [Tooltip("玩家出生位置（世界坐标）")]
     [SerializeField] private Vector3 playerSpawnPosition = Vector3.zero;
 
+    [Header("地图")]
+    [Tooltip("游戏开始时在 (0,0,0) 实例化的地图预制体")]
+    [SerializeField] private GameObject mapPrefab;
+
     /// <summary>暴露值上限。</summary>
     public float MaxExposure => maxExposure;
 
@@ -58,4 +62,7 @@ public class GameProcessConfig : ScriptableObject
 
     /// <summary>玩家出生位置（世界坐标）。</summary>
     public Vector3 PlayerSpawnPosition => playerSpawnPosition;
+
+    /// <summary>游戏开始时在 (0,0,0) 实例化的地图预制体。</summary>
+    public GameObject MapPrefab => mapPrefab;
 }

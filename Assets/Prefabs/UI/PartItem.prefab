@@ -47,13 +47,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7294016317368648605}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5f4cf13a1d030743a9021e8a6de3ec2, type: 3}
+  m_Script: {fileID: 11500000, guid: b3be09d284eaa9c4fa86787063ef191c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIDragToPlayer
-  _nearRadiusScreen: 100
-  _dragLayers:
-    serializedVersion: 2
-    m_Bits: 32
+  _logSetupWarnings: 0
+  _playerDropRadius: 80
 --- !u!222 &9031449669962790783
 CanvasRenderer:
   m_ObjectHideFlags: 0

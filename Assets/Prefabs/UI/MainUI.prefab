@@ -317,6 +317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Backpack
   _slotPrefab: {fileID: 8364549768796627557, guid: 7135411869da0f64793ed4c539e21e3f, type: 3}
+  _partItemPrefab: {fileID: 7294016317368648605, guid: b04c2182c29a07c449244aeacb836e5b, type: 3}
   _grid: {fileID: 9109067364094994634}
   _slotCount: 10
 --- !u!1 &5848522934039429779
