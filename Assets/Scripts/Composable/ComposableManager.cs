@@ -16,13 +16,16 @@ public class ComposableManager : MonoBehaviour
     Dictionary<int, Composable> composableConfigDictCache = new Dictionary<int, Composable>();
     Dictionary<int, ComposableMono> composableMonoDict = new Dictionary<int, ComposableMono>();
 
+    List<ComposableMono> playerComposableList = new List<ComposableMono>();
     public void Awake()
     {
         if (God.Instance != null)
             God.Instance.Add(this);
+
+        player = FindFirstObjectByType<Player>();
     }
 
-    public void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
+    private void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
     {
         if (allComposableList == null)
             allComposableList = Resources.Load<AllComposableList>("AllComposableList");
@@ -54,5 +57,25 @@ public class ComposableManager : MonoBehaviour
         }
         onGenerated?.Invoke(obj);
     }
+
+
+
+    //pos 0，1之间，rot，0到360之间    
+    public void GenPlayerNewComposable(Composable composableConfig,Vector2 pos,float rot)
+    {
+
+    }
+
+    public void DeletePlayerComposable(int genId)
+    {
+        var composableMono = composableMonoDict[genId];
+        if (composableMono != null)
+        {
+            composableMonoDict.Remove(genId);
+            GameObject.Destroy(composableMono.gameObject);
+        }
+    }
+
+
 
 }
