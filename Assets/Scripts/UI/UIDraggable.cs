@@ -14,7 +14,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [SerializeField] private bool _logSetupWarnings = true;
 
     [Header("放在 Player 附近判定与归一化范围（世界单位，X/Y 共用）")]
-    [SerializeField] private float _playerNearWorldRadius = 2f;
+    [SerializeField] private float _playerNearWorldRadius = GlobalSetting.PLAYER_NEAR_WORLD_RADIUS;
 
     [Header("拖拽时旋转")]
     [Tooltip("拖入 Assets/InputSystem_Actions.inputactions")]
