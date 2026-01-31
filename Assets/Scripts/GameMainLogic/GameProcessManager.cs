@@ -393,6 +393,8 @@ public class GameProcessManager : MonoBehaviour
             if (IsPlaying)
                 EndGame();
         }
+        else
+            SyncExposureToUI();
     }
 
     /// <summary>
@@ -406,10 +408,22 @@ public class GameProcessManager : MonoBehaviour
             _currentExposure = _minExposure;
             NotifyExposureChanged();
         }
+        else
+            SyncExposureToUI();
     }
 
     private void NotifyExposureChanged()
     {
         OnExposureChanged?.Invoke(_currentExposure, ExposureNormalized);
+        SyncExposureToUI();
+    }
+
+    /// <summary>将当前暴露值与范围同步到 UIManager 的 Slider 显示。</summary>
+    private void SyncExposureToUI()
+    {
+        var ui = God.Instance?.Get<UIManager>();
+        if (ui == null) return;
+        ui.SetExposedValueRange(_minExposure, _maxExposure);
+        ui.SetExposedValue(_currentExposure);
     }
 }
