@@ -37,9 +37,6 @@ public class MonsterConfigData : ScriptableObject
     [Tooltip("怪物的拓扑配置，配置规则问虾丸")]
     [SerializeField] private string monsterTopoConfig = "";
 
-    [Header("掉落")]
-    [Tooltip("暗杀/死亡时掉落的 Composable，配置其 topoComponent 作为 PickableItem 的拾取内容；空则不掉落")]
-    [SerializeField] private Composable dropComposable;
 
     /// <summary>怪物类型 ID。</summary>
     public string Id => id;
@@ -67,7 +64,4 @@ public class MonsterConfigData : ScriptableObject
 
     /// <summary>怪物拓扑配置</summary>
     public string MonsterTopoConfig => monsterTopoConfig;
-
-    /// <summary>掉落配置（暗杀/死亡时生成 PickableItem 使用其 topoComponent）；空则不掉落。</summary>
-    public Composable DropComposable => dropComposable;
 }

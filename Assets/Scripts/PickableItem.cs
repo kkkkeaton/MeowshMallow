@@ -18,12 +18,6 @@ public class PickableItem : MonoBehaviour
 
     private void Awake()
     {
-        TrySpawnTopoVisual();
-    }
-
-    /// <summary>根据当前 _topoComponent 生成子物体显示；无配置则跳过。</summary>
-    private void TrySpawnTopoVisual()
-    {
         if (_topoComponent == null || _topoComponent.prefab == null) return;
         GameObject child = Instantiate(_topoComponent.prefab, transform);
         child.transform.localPosition = Vector3.zero;
@@ -32,13 +26,6 @@ public class PickableItem : MonoBehaviour
 
         foreach (SpriteRenderer sr in child.GetComponentsInChildren<SpriteRenderer>(true))
             sr.sortingLayerName = MapItemSortingLayer;
-    }
-
-    /// <summary>运行时设置 TopoComponent 并生成显示（用于掉落等动态生成的可捡物体）。</summary>
-    public void InitWithTopo(TopoComponent topo)
-    {
-        _topoComponent = topo;
-        TrySpawnTopoVisual();
     }
 
     /// <summary>执行捡起：将 TopoComponent 交给 Backpack 并销毁本物体。由 PlayerMovement 在交互键按下且本物体在范围内时调用。</summary>

@@ -27,15 +27,9 @@ namespace MeowshMallow
         [Tooltip("松手后减速到静止的速率（单位/秒²），越大停下越快；0 表示与加速度相同")]
         [SerializeField] private float deceleration = 25f;
 
-        [Header("暗杀")]
-        [Tooltip("与敌人在此距离内按下 Attack 可暗杀")]
-        [SerializeField] private float assassinationRange = 1.5f;
-
         private Rigidbody2D _rb;
         private InputAction _moveAction;
         private InputAction _interactAction;
-        private InputAction _attackAction;
-        private MonsterManager _monsterManager;
         private Vector2 _moveInput;
         private Vector2 _currentVelocity;
 
@@ -52,7 +46,6 @@ namespace MeowshMallow
             var playerMap = playerInputActions.FindActionMap("Player", true);
             _moveAction = playerMap.FindAction("Move", true);
             _interactAction = playerMap.FindAction("Interact", true);
-            _attackAction = playerMap.FindAction("Attack", true);
         }
 
         private void OnEnable()
@@ -70,11 +63,6 @@ namespace MeowshMallow
                 _interactAction.Enable();
                 _interactAction.performed += OnInteractPerformed;
             }
-            if (_attackAction != null)
-            {
-                _attackAction.Enable();
-                _attackAction.performed += OnAttackPerformed;
-            }
         }
 
         private void OnDisable()
@@ -90,38 +78,6 @@ namespace MeowshMallow
                 _interactAction.performed -= OnInteractPerformed;
                 _interactAction.Disable();
             }
-            if (_attackAction != null)
-            {
-                _attackAction.performed -= OnAttackPerformed;
-                _attackAction.Disable();
-            }
-        }
-
-        private void OnAttackPerformed(InputAction.CallbackContext context)
-        {
-            if (_monsterManager == null)
-                _monsterManager = FindObjectOfType<MonsterManager>();
-            if (_monsterManager == null && God.Instance != null)
-                _monsterManager = God.Instance.Get<MonsterManager>();
-            if (_monsterManager == null) return;
-
-            Vector2 playerPos = transform.position;
-            MonsterBase closest = null;
-            float closestDist = float.MaxValue;
-
-            foreach (var monster in _monsterManager.GetAliveMonsters())
-            {
-                if (monster == null || !monster.IsAlive()) continue;
-                float dist = Vector2.Distance(playerPos, monster.transform.position);
-                if (dist <= assassinationRange && dist < closestDist)
-                {
-                    closestDist = dist;
-                    closest = monster;
-                }
-            }
-
-            if (closest != null)
-                _monsterManager.Assassinate(closest);
         }
 
         private void OnInteractPerformed(InputAction.CallbackContext context)
