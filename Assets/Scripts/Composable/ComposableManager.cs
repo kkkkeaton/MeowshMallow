@@ -16,6 +16,7 @@ public class ComposableManager : MonoBehaviour
     Dictionary<int, Composable> composableConfigDictCache = new Dictionary<int, Composable>();
     Dictionary<int, ComposableMono> composableMonoDict = new Dictionary<int, ComposableMono>();
 
+    List<ComposableMono> playerComposableList = new List<ComposableMono>();
     public void Awake()
     {
         if (God.Instance != null)
@@ -54,5 +55,15 @@ public class ComposableManager : MonoBehaviour
         }
         onGenerated?.Invoke(obj);
     }
+
+
+
+    //pos 0，1之间，rot，0到360之间    
+    public void GenPlayerNewComposable(int topoId,Vector2 pos,float rot)
+    {
+
+    }
+
+
 
 }
