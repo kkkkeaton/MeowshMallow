@@ -8,13 +8,10 @@ public class PickableItem : MonoBehaviour
     [Header("可组合配置（捡起后传给 Backpack；可空则运行时由 InitWithComposable 注入）")]
     [SerializeField] private Composable _composable;
 
-    [Header("捡起判定距离（世界单位）")]
-    [SerializeField] private float _pickupRadius = 2f;
-
     private const string MapItemSortingLayer = "MapItem";
 
-    /// <summary>捡起判定距离，供 PlayerMovement 检测范围内可捡物体时使用。</summary>
-    public float PickupRadius => _pickupRadius;
+    /// <summary>捡起判定距离，取自 GlobalSetting.PICKUP_RANGE。</summary>
+    public float PickupRadius => GlobalSetting.PICKUP_RANGE;
 
     private void Awake()
     {

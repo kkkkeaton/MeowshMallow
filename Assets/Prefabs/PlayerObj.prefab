@@ -196,6 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8269966187695029207}
   - component: {fileID: 5273715795501656758}
+  - component: {fileID: 3157746282667376504}
   - component: {fileID: 5313645980845413694}
   - component: {fileID: 7339483966091431316}
   m_Layer: 0
@@ -239,7 +240,18 @@ MonoBehaviour:
   normalizeMovement: 1
   acceleration: 20
   deceleration: 25
-  assassinationRange: 1.5
+--- !u!114 &3157746282667376504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593402840087640554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc379d14fd0d5104fb27b60f92a0b32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRangeDetector
 --- !u!50 &5313645980845413694
 Rigidbody2D:
   serializedVersion: 5

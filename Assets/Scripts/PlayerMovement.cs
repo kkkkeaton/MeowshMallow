@@ -28,20 +28,22 @@ namespace MeowshMallow
         [SerializeField] private float deceleration = 25f;
 
         [Header("暗杀")]
-        [Tooltip("与敌人在此距离内按下 Attack 可暗杀")]
-        [SerializeField] private float assassinationRange = 1.5f;
+        [Tooltip("与敌人在此距离内按下 Attack 可暗杀（取自 GlobalSetting.ATTACK_RANGE）")]
+        private float _assassinationRange => GlobalSetting.ATTACK_RANGE;
 
         private Rigidbody2D _rb;
         private InputAction _moveAction;
         private InputAction _interactAction;
         private InputAction _attackAction;
         private MonsterManager _monsterManager;
+        private PlayerRangeDetector _rangeDetector;
         private Vector2 _moveInput;
         private Vector2 _currentVelocity;
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _rangeDetector = GetComponent<PlayerRangeDetector>();
 
             if (playerInputActions == null)
             {
@@ -99,59 +101,24 @@ namespace MeowshMallow
 
         private void OnAttackPerformed(InputAction.CallbackContext context)
         {
+            if (_rangeDetector == null) return;
+            MonsterBase closest = _rangeDetector.GetClosestEnemyInAttackRange();
+            if (closest == null) return;
+
             if (_monsterManager == null)
                 _monsterManager = FindObjectOfType<MonsterManager>();
             if (_monsterManager == null && God.Instance != null)
                 _monsterManager = God.Instance.Get<MonsterManager>();
-            if (_monsterManager == null) return;
-
-            Vector2 playerPos = transform.position;
-            MonsterBase closest = null;
-            float closestDist = float.MaxValue;
-
-            foreach (var monster in _monsterManager.GetAliveMonsters())
-            {
-                if (monster == null || !monster.IsAlive()) continue;
-                float dist = Vector2.Distance(playerPos, monster.transform.position);
-                if (dist <= assassinationRange && dist < closestDist)
-                {
-                    closestDist = dist;
-                    closest = monster;
-                }
-            }
-
-            if (closest != null)
+            if (_monsterManager != null)
                 _monsterManager.Assassinate(closest);
         }
 
         private void OnInteractPerformed(InputAction.CallbackContext context)
         {
-            Vector3 playerPos = transform.position;
-            PickableItem closest = null;
-            float closestDist = float.MaxValue;
-
-            var items = FindObjectsOfType<PickableItem>();
-            int inRange = 0;
-            foreach (var item in items)
-            {
-                float dist = Vector3.Distance(playerPos, item.transform.position);
-                if (dist <= item.PickupRadius)
-                {
-                    inRange++;
-                    if (dist < closestDist)
-                    {
-                        closestDist = dist;
-                        closest = item;
-                    }
-                }
-            }
-
-            Debug.Log($"[PlayerMovement] 按 E：场景内 PickableItem 共 {items.Length} 个，在范围内的 {inRange} 个。");
+            if (_rangeDetector == null) return;
+            PickableItem closest = _rangeDetector.GetClosestPickableInRange();
             if (closest != null)
-            {
-                Debug.Log("[PlayerMovement] 捡起最近的可捡物体。");
                 closest.DoPickup();
-            }
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)
