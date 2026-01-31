@@ -89,4 +89,10 @@ public class MonsterConfig : ScriptableObject
         return _cache != null && _cache.TryGetValue(id, out var e) ? e.MonsterTopoConfig : "";
     }
 
+    /// <summary>根据怪物 ID 获取掉落 Composable，未配置或未找到返回 null。</summary>
+    public Composable GetDropComposable(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.DropComposable : null;
+    }
 }

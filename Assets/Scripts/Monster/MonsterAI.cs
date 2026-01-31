@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// 怪物索敌与移动：在探测范围内发现 Player 后向 Player 移动至可配置的观察距离并面对 Player 观察；
@@ -12,6 +13,14 @@ public class MonsterAI : MonoBehaviour
     private MonsterConfig config; // 仅由 MonsterManager.SetConfig 在生成时注入
     [Tooltip("用于查找玩家的 Tag，不填则用 \"Player\"")]
     [SerializeField] private string playerTag = "Player";
+
+    [Header("发现玩家")]
+    [Tooltip("发现玩家时是否播放抖动小动画")]
+    [SerializeField] private bool discoverShakeEnabled = true;
+    [Tooltip("抖动持续时间（秒）")]
+    [SerializeField] private float discoverShakeDuration = 0.2f;
+    [Tooltip("抖动强度（2D 下为 XY 方向位移幅度）")]
+    [SerializeField] private float discoverShakeStrength = 0.08f;
 
     [Header("调试")]
     [Tooltip("勾选后状态切换时在 Console 输出，便于验证索敌与移动")]
@@ -58,6 +67,17 @@ public class MonsterAI : MonoBehaviour
         ApplyConfig();
     }
 
+    /// <summary>发现玩家时播放的抖动小动画（DOTween）。</summary>
+    private void PlayDiscoverShake()
+    {
+        // if (!discoverShakeEnabled || discoverShakeDuration <= 0f || discoverShakeStrength <= 0f) return;
+        // transform.DOKill(true);
+        // Vector3 strength = new Vector3(discoverShakeStrength, discoverShakeStrength, 0f);
+        // transform.DOShakePosition(discoverShakeDuration, strength, 10, 90f, true, false)
+        //     .SetTarget(transform)
+        //     .SetUpdate(UpdateType.Normal);
+    }
+
     private void Start()
     {
         if (string.IsNullOrEmpty(playerTag)) playerTag = "Player";
@@ -82,6 +102,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer <= _detectionRange)
                 {
                     _state = State.Approaching;
+                    PlayDiscoverShake();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 进入索敌，开始接近玩家 (距离={distToPlayer:F1})");
                 }
                 break;
@@ -127,6 +148,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer <= _detectionRange)
                 {
                     _state = State.Approaching;
+                    PlayDiscoverShake();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家再次进入探测范围，重新开始跟随 (距离={distToPlayer:F1})");
                 }
                 break;
