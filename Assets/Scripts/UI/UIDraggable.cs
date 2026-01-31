@@ -178,6 +178,11 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
                 float rotationDeg = _dragClone.localEulerAngles.z;
                 Debug.Log($"[UIDraggable] 归一化坐标(左下0,0 右上1,1)={normalized}，拖拽物体旋转(度)={rotationDeg}");
+
+                Composable composableConfig = GetComposable();
+                ComposableManager manager = God.Instance?.Get<ComposableManager>();
+                if (manager != null && composableConfig != null)
+                    manager.GenPlayerNewComposable(composableConfig, normalized, rotationDeg);
             }
         }
 
