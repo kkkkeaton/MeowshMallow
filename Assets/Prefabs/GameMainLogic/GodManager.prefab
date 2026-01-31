@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e87405582eb1c3689bef7beff219abfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameProcessManager
-  _config: {fileID: 11400000, guid: fe3ef234cf60e78409fd9097af901ddf, type: 2}
+  _config: {fileID: 11400000, guid: cb9e8d2a820beb145a23a3d97001d8bf, type: 2}
   _enableStateTestKeys: 1
 --- !u!114 &8733166126312369298
 MonoBehaviour:

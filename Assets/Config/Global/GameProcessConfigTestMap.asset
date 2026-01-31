@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 438f8489a13fb4b46b059a6d543c6160, type: 3}
+  m_Name: GameProcessConfigTestMap
+  m_EditorClassIdentifier: Assembly-CSharp::GameProcessConfig
+  maxExposure: 100
+  minExposure: 0
+  normalGrowthPerSecond: 2
+  spottedGrowthPerSecond: 6
+  disguiseSuccessExposureDecrease: 20
+  disguiseSuccessImmunityDuration: 5
+  playerPrefab: {fileID: 5593402840087640554, guid: 478ee87e67f1cf1b0a4639cf6871c74f, type: 3}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  mapPrefab: {fileID: 1572174699967102755, guid: 32412d6828a4e0945ac3428adfb60eb8, type: 3}
