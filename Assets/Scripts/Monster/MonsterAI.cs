@@ -1,9 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// 怪物索敌与移动：发现 Player 后向 Player 移动一段可配置距离，然后面对 Player 观察；
-/// 观察时累积识破值，满时增加玩家在该类型怪物中的暴露值。提供减少识破值的接口。
-/// 需与 MonsterBase 挂在同一 GameObject 上。MonsterConfig 由 MonsterManager 在生成时自动注入，预制体上无需配置。
+/// 怪物索敌与移动：在探测范围内发现 Player 后向 Player 移动至可配置的观察距离并面对 Player 观察；
+/// 一旦玩家走出探测范围则停止跟随；玩家再次进入探测范围时会重新开始跟随。观察时累积识破值，满时增加玩家暴露值。
+/// 需与 MonsterBase 挂在同一 GameObject 上。MonsterConfig 由 MonsterManager 在生成时自动注入。
 /// </summary>
 [RequireComponent(typeof(MonsterBase))]
 public class MonsterAI : MonoBehaviour
@@ -28,7 +28,8 @@ public class MonsterAI : MonoBehaviour
     /// <summary>当前识破值（0 ~ 满值）。</summary>
     private float _currentDetectionValue;
 
-    private enum State { Idle, Approaching, Observing }
+    /// <summary>Idle=待机 Approaching=接近中 Observing=观察中 Disengaged=玩家已离开探测范围，待玩家再次进入后重新跟随</summary>
+    private enum State { Idle, Approaching, Observing, Disengaged }
     private State _state = State.Idle;
 
     private void Awake()
@@ -86,6 +87,12 @@ public class MonsterAI : MonoBehaviour
                 break;
 
             case State.Approaching:
+                if (distToPlayer > _detectionRange)
+                {
+                    _state = State.Disengaged;
+                    if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
+                    break;
+                }
                 if (distToPlayer <= _approachDistance)
                 {
                     _state = State.Observing;
@@ -97,6 +104,13 @@ public class MonsterAI : MonoBehaviour
                 break;
 
             case State.Observing:
+                if (distToPlayer > _detectionRange)
+                {
+                    _state = State.Disengaged;
+                    _currentDetectionValue = 0f;
+                    if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
+                    break;
+                }
                 FacePlayer(myPos, playerPos);
                 _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
                 if (_currentDetectionValue >= _detectionMaxValue)
@@ -107,11 +121,13 @@ public class MonsterAI : MonoBehaviour
                         exposure.AddExposureForMonsterType(_monster.GetId(), 1f); // 暴露值增加量可后续改为配置
                     _currentDetectionValue = 0f; // 满后重置，继续观察可再次累积
                 }
-                if (distToPlayer > _detectionRange)
+                break;
+
+            case State.Disengaged:
+                if (distToPlayer <= _detectionRange)
                 {
-                    _state = State.Idle;
-                    _currentDetectionValue = 0f;
-                    if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开检测范围，回到待机 (距离={distToPlayer:F1})");
+                    _state = State.Approaching;
+                    if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家再次进入探测范围，重新开始跟随 (距离={distToPlayer:F1})");
                 }
                 break;
         }
