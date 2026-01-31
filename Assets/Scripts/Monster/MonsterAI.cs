@@ -3,13 +3,13 @@ using UnityEngine;
 /// <summary>
 /// 怪物索敌与移动：发现 Player 后向 Player 移动一段可配置距离，然后面对 Player 观察；
 /// 观察时累积识破值，满时增加玩家在该类型怪物中的暴露值。提供减少识破值的接口。
-/// 需与 MonsterBase 挂在同一 GameObject 上，并指定 MonsterConfig。
+/// 需与 MonsterBase 挂在同一 GameObject 上。MonsterConfig 由 MonsterManager 在生成时自动注入，预制体上无需配置。
 /// </summary>
 [RequireComponent(typeof(MonsterBase))]
 public class MonsterAI : MonoBehaviour
 {
     [Header("配置")]
-    [SerializeField] private MonsterConfig config;
+    private MonsterConfig config; // 仅由 MonsterManager.SetConfig 在生成时注入
     [Tooltip("用于查找玩家的 Tag，不填则用 \"Player\"")]
     [SerializeField] private string playerTag = "Player";
 
