@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations;
 
 namespace MeowshMallow
 {
@@ -30,6 +31,11 @@ namespace MeowshMallow
         [Header("暗杀")]
         [Tooltip("与敌人在此距离内按下 Attack 可暗杀（取自 GlobalSetting.ATTACK_RANGE）")]
         private float _assassinationRange => GlobalSetting.ATTACK_RANGE;
+
+        [SerializeField] private AnimationCurve moveSpeedCurve;
+
+        [SerializeField] private float moveCurveOneTime = 1f;
+        private float moveCurveTimeNow = 0f;
 
         private Rigidbody2D _rb;
         private InputAction _moveAction;
@@ -135,11 +141,20 @@ namespace MeowshMallow
         {
             if (_rb == null || _moveAction == null) return;
 
+            moveCurveTimeNow += Time.fixedDeltaTime;
+            if (moveCurveTimeNow > moveCurveOneTime)
+                moveCurveTimeNow = 0f;
+
+
             Vector2 move = _moveInput;
             if (normalizeMovement && move.sqrMagnitude > 1f)
                 move = move.normalized;
 
-            Vector2 targetVelocity = move * moveSpeed;
+            if (move.sqrMagnitude < 0.01f)
+                moveCurveTimeNow = 0f;
+
+
+            Vector2 targetVelocity = move * moveSpeed*moveSpeedCurve.Evaluate(moveCurveTimeNow/moveCurveOneTime);
             float decel = deceleration > 0f ? deceleration : acceleration;
             float rate = move.sqrMagnitude > 0.01f ? acceleration : decel;
             _currentVelocity = Vector2.MoveTowards(_currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
