@@ -120,11 +120,11 @@ public class TestDevEditor : Editor
             int typeId = testDev.GetTestComposableTypeId();
             try
             {
-                composableManager.GenerateItemByTypeId(typeId, obj =>
-                {
-                    if (obj != null)
-                        Debug.Log($"[TestDevEditor] 已生成 Composable id={typeId}: {obj.name}");
-                });
+                // composableManager.GenerateItemByTypeId(typeId, obj =>
+                // {
+                //     if (obj != null)
+                //         Debug.Log($"[TestDevEditor] 已生成 Composable id={typeId}: {obj.name}");
+                // });
             }
             catch (System.Exception e)
             {
