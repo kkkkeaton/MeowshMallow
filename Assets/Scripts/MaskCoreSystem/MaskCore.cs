@@ -69,10 +69,21 @@ public class MaskCore
     }
 
 
-    //将自己的多个Mask单元与对方的主Mask进行比较
+    //将自己的多个Mask单元与对方的主Mask进行比较，返回最高相似度
     public float Compare(MaskCore other)
     {
-        return 1;
+        if (other == null) 
+        {
+            Debug.LogWarning($"[MaskCore] 对方Mask为空，无法比较");
+            return 0;
+        }
+        float maxSimilarity = 0;
+        foreach (var unit in maskUnits)
+        {
+            float similarity = unit.Compare(other.mainMaskUnit);
+            maxSimilarity = Mathf.Max(maxSimilarity, similarity);
+        }
+        return maxSimilarity;
     }
 
     public int UnitCount => maskUnits?.Count ?? 0;
@@ -137,6 +148,43 @@ public class MaskCoreUnit
             }
         }
         return false;
+    }
+
+    //将对方的元素逐个与自己的元素进行比较，记录其最高相似度到临时表ListTemp
+    //如果临时表ListTemp中的条目数量大于自己元素的数量，设多出来的数量为y，则最低的y个条目相似度置为0
+    //如果临时表ListTemp中的条目数量小于自己元素的数量，则用0填充
+    //返回临时表ListTemp中所有条目的平均值
+    public float Compare(MaskCoreUnit other)
+    {
+        if (other == null) return 0f;
+        List<float> ListTemp = new List<float>();
+        for (int j = 0; j < other.ElementCount; j++)
+        {
+            float maxSim = 0f;
+            for (int i = 0; i < ElementCount; i++)
+            {
+                float sim = GetElement(i).Compare(other.GetElement(j));
+                if (sim > maxSim) maxSim = sim;
+            }
+            ListTemp.Add(maxSim);
+        }
+        if (ListTemp.Count > ElementCount)
+        {
+            int y = ListTemp.Count - ElementCount;
+            var indexed = new List<(int idx, float val)>();
+            for (int i = 0; i < ListTemp.Count; i++) indexed.Add((i, ListTemp[i]));
+            indexed.Sort((a, b) => a.val.CompareTo(b.val));
+            for (int i = 0; i < y; i++)
+                ListTemp[indexed[i].idx] = 0f;
+        }
+        while (ListTemp.Count < ElementCount)
+            ListTemp.Add(0f);
+        if (ListTemp.Count == 0) return 0f;
+        float sum = 0f;
+        for (int i = 0; i < ListTemp.Count; i++) sum += ListTemp[i];
+        //Log出临时表判断情况
+        Debug.Log($"[MaskCoreUnit] 临时表情况: {string.Join(", ", ListTemp)}");
+        return sum / ListTemp.Count;
     }
 }
 

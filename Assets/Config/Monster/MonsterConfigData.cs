@@ -33,6 +33,11 @@ public class MonsterConfigData : ScriptableObject
     [Tooltip("识破值满值，达到后会增加玩家在该类型怪物中的暴露值")]
     [SerializeField] private float detectionMaxValue = 100f;
 
+    [Header("同类判定")]
+    [Tooltip("怪物将玩家视作同类的最低阈值，0～1。玩家与怪物拓扑匹配度 >= 此值时视为同类")]
+    [Range(0f, 1f)]
+    [SerializeField] private float sameTypeThreshold = 0f;
+
     [Header("怪物拓扑")]
     [Tooltip("怪物的拓扑配置，配置规则问虾丸")]
     [SerializeField] private string monsterTopoConfig = "";
@@ -64,6 +69,9 @@ public class MonsterConfigData : ScriptableObject
 
     /// <summary>识破值满值。</summary>
     public float DetectionMaxValue => detectionMaxValue;
+
+    /// <summary>将玩家视作同类的最低阈值，0～1。</summary>
+    public float SameTypeThreshold => sameTypeThreshold;
 
     /// <summary>怪物拓扑配置</summary>
     public string MonsterTopoConfig => monsterTopoConfig;

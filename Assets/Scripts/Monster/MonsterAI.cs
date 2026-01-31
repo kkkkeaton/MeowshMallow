@@ -28,11 +28,14 @@ public class MonsterAI : MonoBehaviour
 
     private MonsterBase _monster;
     private Transform _player;
+
+    private IMaskInfoProvider _playerMaskInfoProvider;
     private float _detectionRange;
     private float _approachDistance;
     private float _moveSpeed;
     private float _detectionFillRatePerSecond;
     private float _detectionMaxValue;
+    private float _sameTypeThreshold;
 
     /// <summary>当前识破值（0 ~ 满值）。</summary>
     private float _currentDetectionValue;
@@ -58,6 +61,21 @@ public class MonsterAI : MonoBehaviour
         _moveSpeed = config.GetMoveSpeed(id);
         _detectionFillRatePerSecond = config.GetDetectionFillRatePerSecond(id);
         _detectionMaxValue = config.GetDetectionMaxValue(id);
+        _sameTypeThreshold = config.GetSameTypeThreshold(id);
+    }
+
+    /// <summary>玩家与怪物拓扑匹配度是否 >= 同类阈值（视作同类则不索敌、不累积识破）。</summary>
+    private bool IsPlayerSameType()
+    {
+        var playerMask = _playerMaskInfoProvider?.GetMaskInfo();
+        if (playerMask == null) 
+        {
+            Debug.LogWarning($"[MonsterAI] {gameObject.name} 未找到玩家，索敌与移动将不生效。请为玩家 GameObject 设置 IMaskInfoProvider 组件。");
+            return false;
+        };
+        float similarity = _monster.JudgeMaskInfo(playerMask);
+        Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配度: {similarity}");
+        return similarity >= _sameTypeThreshold;
     }
 
     /// <summary>运行时注入配置（如由 MonsterManager 生成后调用），便于预制体不绑定 config。</summary>
@@ -83,7 +101,10 @@ public class MonsterAI : MonoBehaviour
         if (string.IsNullOrEmpty(playerTag)) playerTag = "Player";
         var go = GameObject.FindWithTag(playerTag);
         if (go != null)
+        {
             _player = go.transform;
+            _playerMaskInfoProvider = _player?.GetComponent<IMaskInfoProvider>();
+        }
         else
             Debug.LogWarning($"[MonsterAI] {gameObject.name} 未找到 Tag=\"{playerTag}\" 的玩家，索敌与移动将不生效。请为玩家 GameObject 设置 Tag 为 Player。");
     }
@@ -115,7 +136,8 @@ public class MonsterAI : MonoBehaviour
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
-                if (distToPlayer <= _approachDistance)
+                var isSameType = IsPlayerSameType();
+                if (distToPlayer <= _approachDistance && !isSameType)
                 {
                     _state = State.Observing;
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 到达观察距离，开始观察玩家 (距离={distToPlayer:F1})");

@@ -125,6 +125,18 @@ public class TestDevEditor : Editor
             Debug.Log($"[TestDevEditor] 已为 {aliveMonsters.Count} 个怪物调用 DebugTopo。");
         }
 
+        if (GUILayout.Button("调用玩家的 DebugTopo"))
+        {
+            var player = Object.FindObjectOfType<Player>();
+            if (player == null)
+            {
+                Debug.LogWarning("[TestDevEditor] 未找到 Player。");
+                return;
+            }
+            player.DebugTopo();
+            Debug.Log("[TestDevEditor] 已调用玩家的 DebugTopo。");
+        }
+
         if (GUILayout.Button("生成 Composable（使用上方类型 id）"))
         {
             var composableManager = testDev.GetComposableManager() ?? Object.FindObjectOfType<ComposableManager>();

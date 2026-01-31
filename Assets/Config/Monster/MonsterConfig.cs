@@ -75,6 +75,13 @@ public class MonsterConfig : ScriptableObject
         return _cache != null && _cache.TryGetValue(id, out var e) ? e.DetectionMaxValue : 100f;
     }
 
+    /// <summary>根据怪物 ID 获取将玩家视作同类的最低阈值（0～1），未找到返回 0。</summary>
+    public float GetSameTypeThreshold(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.SameTypeThreshold : 0f;
+    }
+
     /// <summary>根据怪物 ID 获取完整配置条目，未找到返回 null。</summary>
     public MonsterConfigData GetEntry(string id)
     {
