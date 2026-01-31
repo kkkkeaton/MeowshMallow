@@ -111,6 +111,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer > _detectionRange)
                 {
                     _state = State.Disengaged;
+                    _currentDetectionValue = 0f;
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -122,6 +123,8 @@ public class MonsterAI : MonoBehaviour
                 }
                 Vector2 dir = (playerPos - myPos).normalized;
                 transform.position = Vector2.MoveTowards(myPos, playerPos - dir * _approachDistance, _moveSpeed * Time.deltaTime);
+                _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
+                TryTriggerDetectionFull();
                 break;
 
             case State.Observing:
@@ -134,18 +137,7 @@ public class MonsterAI : MonoBehaviour
                 }
                 FacePlayer(myPos, playerPos);
                 _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
-                if (_currentDetectionValue >= _detectionMaxValue)
-                {
-                    _currentDetectionValue = _detectionMaxValue;
-                    // 识破值满：进入暴露状态（切换 BGM 与暴露增速）
-                    var process = God.Instance?.Get<GameProcessManager>();
-                    if (process != null)
-                        process.EnterSpotted();
-                    var exposure = PlayerExposure.Instance;
-                    if (exposure != null)
-                        exposure.AddExposureForMonsterType(_monster.GetId(), 1f); // 暴露值增加量可后续改为配置
-                    _currentDetectionValue = 0f; // 满后重置，继续观察可再次累积
-                }
+                TryTriggerDetectionFull();
                 break;
 
             case State.Disengaged:
@@ -157,6 +149,20 @@ public class MonsterAI : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值。仅在 Approaching/Observing 中累积后调用。</summary>
+    private void TryTriggerDetectionFull()
+    {
+        if (_currentDetectionValue < _detectionMaxValue) return;
+        _currentDetectionValue = _detectionMaxValue;
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process != null)
+            process.EnterSpotted();
+        var exposure = PlayerExposure.Instance;
+        if (exposure != null)
+            exposure.AddExposureForMonsterType(_monster.GetId(), 1f);
+        _currentDetectionValue = 0f;
     }
 
     private void FacePlayer(Vector2 myPos, Vector2 playerPos)
