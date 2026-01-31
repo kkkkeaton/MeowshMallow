@@ -169,10 +169,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6699536586120926412}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1000, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5694252251514694521
 MonoBehaviour:
@@ -194,7 +194,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 100, y: 200}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Backpack
   _slotPrefab: {fileID: 8364549768796627557, guid: 7135411869da0f64793ed4c539e21e3f, type: 3}
   _grid: {fileID: 9109067364094994634}
-  _slotCount: 5
+  _slotCount: 10
 --- !u!1 &5848522934039429779
 GameObject:
   m_ObjectHideFlags: 0
