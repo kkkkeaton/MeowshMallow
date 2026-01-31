@@ -21,9 +21,11 @@ public class ComposableManager : MonoBehaviour
     {
         if (God.Instance != null)
             God.Instance.Add(this);
+
+        player = FindFirstObjectByType<Player>();
     }
 
-    public void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
+    private void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
     {
         if (allComposableList == null)
             allComposableList = Resources.Load<AllComposableList>("AllComposableList");
@@ -59,9 +61,19 @@ public class ComposableManager : MonoBehaviour
 
 
     //pos 0，1之间，rot，0到360之间    
-    public void GenPlayerNewComposable(int topoId,Vector2 pos,float rot)
+    public void GenPlayerNewComposable(Composable composableConfig,Vector2 pos,float rot)
     {
 
+    }
+
+    public void DeletePlayerComposable(int genId)
+    {
+        var composableMono = composableMonoDict[genId];
+        if (composableMono != null)
+        {
+            composableMonoDict.Remove(genId);
+            GameObject.Destroy(composableMono.gameObject);
+        }
     }
 
 
