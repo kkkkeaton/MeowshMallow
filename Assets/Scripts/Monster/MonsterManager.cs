@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MonsterManager : MonoBehaviour
 {
     [SerializeField] private MonsterConfig config; // 在 Inspector 中拖入 MonsterConfig.asset
-    [Tooltip("掉落物 PickableItem 预制体（需挂 PickableItem，topo 可空，运行时由 InitWithTopo 注入）")]
+    [Tooltip("掉落物 PickableItem 预制体（需挂 PickableItem，Composable 可空，运行时由 InitWithComposable 注入）")]
     [SerializeField] private GameObject pickableItemDropPrefab;
 
     private readonly List<MonsterBase> aliveMonsters = new List<MonsterBase>();
@@ -52,22 +52,20 @@ public class MonsterManager : MonoBehaviour
 
         monster.Die();
 
-        if (dropComposable != null && dropComposable.topoComponent != null)
+        if (dropComposable != null)
             SpawnDrop(position, dropComposable);
     }
 
-    /// <summary>在指定位置生成一个 PickableItem 掉落物，使用 Composable 的 topoComponent。</summary>
+    /// <summary>在指定位置生成一个 PickableItem 掉落物，直接传入 Composable。</summary>
     public void SpawnDrop(Vector2 position, Composable dropComposable)
     {
-        if (dropComposable == null || dropComposable.topoComponent == null || pickableItemDropPrefab == null) return;
-
-        var pickable = pickableItemDropPrefab.GetComponent<PickableItem>();
-        if (pickable == null) return;
+        if (dropComposable == null || pickableItemDropPrefab == null) return;
+        if (pickableItemDropPrefab.GetComponent<PickableItem>() == null) return;
 
         GameObject instance = Instantiate(pickableItemDropPrefab, position, Quaternion.identity, transform);
         var item = instance.GetComponent<PickableItem>();
         if (item != null)
-            item.InitWithTopo(dropComposable.topoComponent);
+            item.InitWithComposable(dropComposable);
     }
 
     /// <summary>返回当前存活怪物列表的只读视图。</summary>
