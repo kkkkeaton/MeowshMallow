@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>开发测试：按 G/H 键生成怪物，验证 MonsterManager、索敌与移动。</summary>
 public class TestDev : MonoBehaviour
@@ -51,4 +54,42 @@ public class TestDev : MonoBehaviour
         else
             Debug.LogWarning($"[TestDev] 生成失败，请检查 MonsterConfig 中是否存在 id=\"{testMonsterId}\" 的怪物配置及预制体。");
     }
+
+    /// <summary>为 Editor 或反射获取 MonsterManager 提供公共方法。</summary>
+    public MonsterManager GetMonsterManager()
+    {
+        return monsterManager;
+    }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(TestDev))]
+public class TestDevEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        TestDev testDev = (TestDev)target;
+
+        if (GUILayout.Button("调用所有怪物的 DebugTopo"))
+        {
+            var monsterManager = testDev.GetMonsterManager();
+            if (monsterManager == null)
+            {
+                Debug.LogWarning("[TestDevEditor] 未找到 MonsterManager。");
+                return;
+            }
+
+            var aliveMonsters = monsterManager.GetAliveMonsters();
+            foreach (var monster in aliveMonsters)
+            {
+                var monsterBase = monster.GetComponent<MonsterBase>();
+                if (monsterBase != null)
+                    monsterBase.DebugTopo();
+            }
+            Debug.Log($"[TestDevEditor] 已为 {aliveMonsters.Count} 个怪物调用 DebugTopo。");
+        }
+    }
+}
+#endif
