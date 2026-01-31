@@ -19,7 +19,7 @@ public class TestDev : MonoBehaviour
 
     void Start()
     {
-        monsterManager = FindObjectOfType<MonsterManager>();
+        monsterManager = FindFirstObjectByType<MonsterManager>();
         if (monsterManager == null && God.Instance != null)
             monsterManager = God.Instance.Get<MonsterManager>();
 
@@ -38,7 +38,7 @@ public class TestDev : MonoBehaviour
         if (!spawnNear && !spawnFar) return;
 
         float offset = spawnNear ? spawnOffsetNear : spawnOffsetFar;
-        var player = FindObjectOfType<Player>();
+        var player = FindFirstObjectByType<Player>();
         var spawnPos = player != null
             ? (Vector2)player.transform.position + Vector2.right * offset
             : new Vector2(offset, 0f);
