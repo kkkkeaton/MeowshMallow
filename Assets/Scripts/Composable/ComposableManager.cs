@@ -71,7 +71,7 @@ public class ComposableManager : MonoBehaviour
                 obj.transform.localRotation = Quaternion.Euler(0, 0, rot);
 
                 var ele = new Element("");
-                ele.type = composableConfig.topoComponent.id;
+                ele.type = composableConfig.topoComponent.typeId;
                 ele.pos = pos;
                 ele.rot = rot;
                 player.AddOneElement2Main(ele);
@@ -89,7 +89,7 @@ public class ComposableManager : MonoBehaviour
         Vector2 pos;
         float rot;
         composableMono.GetOriginalConfig(out composable, out pos, out rot);
-        bool isSuccess = player.TryRemoveOneElementFromMain(composable.topoComponent.id, pos, rot);
+        bool isSuccess = player.TryRemoveOneElementFromMain(composable.topoComponent.typeId, pos, rot);
         if (!isSuccess)
         {
             Debug.LogError("删除Composable失败,genId:" + genId);
