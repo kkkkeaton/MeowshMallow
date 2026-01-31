@@ -26,6 +26,10 @@ public class GameProcessManager : MonoBehaviour
     /// <summary>游戏进程配置，在 Inspector 中拖入 GameProcessConfig.asset。</summary>
     [SerializeField] private GameProcessConfig _config;
 
+    [Header("调试")]
+    [Tooltip("勾选后：数字键 1 = 进入平常状态，数字键 2 = 进入暴露状态（用于测试 BGM 与状态切换）")]
+    [SerializeField] private bool _enableStateTestKeys;
+
     // ---------- 运行时状态（由上述 config 初始化） ----------
 
     /// <summary>暴露值上限（来自 config 或默认 100）。</summary>
@@ -149,6 +153,15 @@ public class GameProcessManager : MonoBehaviour
 
     private void Update()
     {
+        // 调试：按键直接切换平常/暴露状态（与 IsPlaying 无关，便于测试 BGM）
+        if (_enableStateTestKeys)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                EnterNormal();
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                EnterSpotted();
+        }
+
         if (!IsPlaying) return;
 
         // 伪装免疫倒计时：结束后切回正常
@@ -205,6 +218,8 @@ public class GameProcessManager : MonoBehaviour
         if (_config != null && _config.MapPrefab != null)
             Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
 
+        PlayNormalBgm();
+
         OnGameStart?.Invoke();
     }
 
@@ -237,23 +252,37 @@ public class GameProcessManager : MonoBehaviour
     // ---------- 玩家状态切换（公开） ----------
 
     /// <summary>
-    /// 切换到正常状态：使用默认增速增加暴露值。
+    /// 切换到正常状态：使用默认增速增加暴露值，并切换为平常 BGM。
     /// </summary>
     public void EnterNormal()
     {
         _playerState = PlayerExposureState.Normal;
         _exposureGrowthPerSecond = _normalGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
+        PlayNormalBgm();
     }
 
     /// <summary>
-    /// 切换到被识破状态：使用更高增速增加暴露值。
+    /// 切换到被识破状态：使用更高增速增加暴露值，并切换为暴露 BGM。
     /// </summary>
     public void EnterSpotted()
     {
         _playerState = PlayerExposureState.Spotted;
         _exposureGrowthPerSecond = _spottedGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
+        PlayDangerBgm();
+    }
+
+    private void PlayNormalBgm()
+    {
+        var audio = God.Instance?.Get<AudioManager>();
+        audio?.PlayNormalBgm();
+    }
+
+    private void PlayDangerBgm()
+    {
+        var audio = God.Instance?.Get<AudioManager>();
+        audio?.PlayDangerBgm();
     }
 
     /// <summary>
