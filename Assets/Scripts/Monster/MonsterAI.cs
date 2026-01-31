@@ -26,6 +26,8 @@ public class MonsterAI : MonoBehaviour
     [Tooltip("勾选后状态切换时在 Console 输出，便于验证索敌与移动")]
     [SerializeField] private bool debugLog;
 
+    [SerializeField] private GameObject emojiConfused;
+
     private MonsterBase _monster;
     private Transform _player;
 
@@ -92,6 +94,7 @@ public class MonsterAI : MonoBehaviour
     /// <summary>发现玩家时播放的抖动小动画（DOTween）。</summary>
     private void PlayDiscoverShake()
     {
+        emojiConfused.SetActive(true);
         // if (!discoverShakeEnabled || discoverShakeDuration <= 0f || discoverShakeStrength <= 0f) return;
         // transform.DOKill(true);
         // Vector3 strength = new Vector3(discoverShakeStrength, discoverShakeStrength, 0f);
@@ -120,6 +123,14 @@ public class MonsterAI : MonoBehaviour
         Vector2 myPos = transform.position;
         Vector2 playerPos = _player.position;
         float distToPlayer = Vector2.Distance(myPos, playerPos);
+        var isSameType = IsPlayerSameType();
+
+        if (isSameType)
+        {
+            _state = State.Idle;
+            emojiConfused.SetActive(false);
+            return;
+        }
 
         switch (_state)
         {
@@ -140,8 +151,7 @@ public class MonsterAI : MonoBehaviour
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
-                var isSameType = IsPlayerSameType();
-                if (distToPlayer <= _approachDistance && !isSameType)
+                if (distToPlayer <= _approachDistance )
                 {
                     _state = State.Observing;
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 到达观察距离，开始观察玩家 (距离={distToPlayer:F1})");
@@ -193,10 +203,10 @@ public class MonsterAI : MonoBehaviour
 
     private void FacePlayer(Vector2 myPos, Vector2 playerPos)
     {
-        Vector2 dir = playerPos - myPos;
-        if (dir.sqrMagnitude < 0.0001f) return;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        // Vector2 dir = playerPos - myPos;
+        // if (dir.sqrMagnitude < 0.0001f) return;
+        // float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        // transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     /// <summary>减少当前识破值，用于隐身、打断观察等后续逻辑。</summary>
