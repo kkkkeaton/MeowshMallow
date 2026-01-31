@@ -18,3 +18,4 @@ MonoBehaviour:
   spottedGrowthPerSecond: 6
   disguiseSuccessExposureDecrease: 20
   disguiseSuccessImmunityDuration: 5
+  playerPrefab: {fileID: 5593402840087640554, guid: 478ee87e67f1cf1b0a4639cf6871c74f, type: 3}

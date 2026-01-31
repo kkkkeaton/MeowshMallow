@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// 游戏进程配置资源：暴露值上限/下限、每秒自然增长量等，供 GameProcessManager 使用。
-/// 资产需放在 Resources/Config/Global/GameProcessConfig，由管理器按路径强制加载，无需拖动赋值。
+/// 游戏进程配置资源：暴露值上限/下限、每秒自然增长量、玩家预制体等，供 GameProcessManager 使用。
+/// 将本资产拖到 GameProcessManager 的 Config 槽位即可。
 /// </summary>
 [CreateAssetMenu(fileName = "GameProcessConfig", menuName = "Scriptable Objects/GameProcessConfig")]
 public class GameProcessConfig : ScriptableObject
@@ -28,6 +28,13 @@ public class GameProcessConfig : ScriptableObject
     [Tooltip("伪装成功后多少秒内不再增加暴露值")]
     [SerializeField] private float disguiseSuccessImmunityDuration = 5f;
 
+    [Header("玩家")]
+    [Tooltip("游戏开始时实例化的玩家预制体")]
+    [SerializeField] private GameObject playerPrefab;
+
+    [Tooltip("玩家出生位置（世界坐标）")]
+    [SerializeField] private Vector3 playerSpawnPosition = Vector3.zero;
+
     /// <summary>暴露值上限。</summary>
     public float MaxExposure => maxExposure;
 
@@ -45,4 +52,10 @@ public class GameProcessConfig : ScriptableObject
 
     /// <summary>伪装成功后免疫增加暴露值的时长（秒）。</summary>
     public float DisguiseSuccessImmunityDuration => disguiseSuccessImmunityDuration;
+
+    /// <summary>游戏开始时实例化的玩家预制体。</summary>
+    public GameObject PlayerPrefab => playerPrefab;
+
+    /// <summary>玩家出生位置（世界坐标）。</summary>
+    public Vector3 PlayerSpawnPosition => playerSpawnPosition;
 }

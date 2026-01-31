@@ -15,4 +15,11 @@ public class Launcher : MonoBehaviour
         instance.name = "GodManager";
         DontDestroyOnLoad(instance);
     }
+
+    private void Start()
+    {
+        var gameProcess = God.Instance?.Get<GameProcessManager>();
+        if (gameProcess != null)
+            gameProcess.StartGame();
+    }
 }

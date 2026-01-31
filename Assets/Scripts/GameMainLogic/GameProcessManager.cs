@@ -21,10 +21,10 @@ public enum PlayerExposureState
 /// </summary>
 public class GameProcessManager : MonoBehaviour
 {
-    // ---------- 配置（从 Resources/Config/Global/GameProcessConfig 强制加载，无需拖动） ----------
+    // ---------- 配置（Inspector 手动绑定） ----------
 
-    /// <summary>配置资产在 Resources 下的路径（不含扩展名），对应资产需放在 Resources/Config/Global/GameProcessConfig.asset。</summary>
-    private const string ConfigResourcePath = "Config/Global/GameProcessConfig";
+    /// <summary>游戏进程配置，在 Inspector 中拖入 GameProcessConfig.asset。</summary>
+    [SerializeField] private GameProcessConfig _config;
 
     // ---------- 运行时状态（由上述 config 初始化） ----------
 
@@ -66,6 +66,12 @@ public class GameProcessManager : MonoBehaviour
     /// <summary>玩法是否已结束（一旦结束本局不再更新暴露值）。</summary>
     private bool _isEnded;
 
+    /// <summary>玩家预制体（来自 config），游戏开始时实例化。</summary>
+    private GameObject _playerPrefab;
+
+    /// <summary>玩家出生位置（来自 config）。</summary>
+    private Vector3 _playerSpawnPosition;
+
     // ---------- 事件（供 UI、音效等订阅） ----------
 
     /// <summary>玩法开始时触发。</summary>
@@ -99,18 +105,18 @@ public class GameProcessManager : MonoBehaviour
 
     private void Awake()
     {
-        // 从固定路径强制加载配置；未找到资产时使用默认值
-        var config = Resources.Load<GameProcessConfig>(ConfigResourcePath);
-        if (config != null)
+        if (_config != null)
         {
-            _maxExposure = config.MaxExposure;
-            _minExposure = config.MinExposure;
-            _normalGrowthPerSecond = config.NormalGrowthPerSecond;
-            _spottedGrowthPerSecond = config.SpottedGrowthPerSecond;
-            _disguiseSuccessExposureDecrease = config.DisguiseSuccessExposureDecrease;
-            _disguiseSuccessImmunityDuration = config.DisguiseSuccessImmunityDuration;
+            _maxExposure = _config.MaxExposure;
+            _minExposure = _config.MinExposure;
+            _normalGrowthPerSecond = _config.NormalGrowthPerSecond;
+            _spottedGrowthPerSecond = _config.SpottedGrowthPerSecond;
+            _disguiseSuccessExposureDecrease = _config.DisguiseSuccessExposureDecrease;
+            _disguiseSuccessImmunityDuration = _config.DisguiseSuccessImmunityDuration;
             _exposureGrowthPerSecond = _normalGrowthPerSecond;
             _playerState = PlayerExposureState.Normal;
+            _playerPrefab = _config.PlayerPrefab;
+            _playerSpawnPosition = _config.PlayerSpawnPosition;
         }
         else
         {
@@ -122,6 +128,8 @@ public class GameProcessManager : MonoBehaviour
             _disguiseSuccessImmunityDuration = 5f;
             _exposureGrowthPerSecond = _normalGrowthPerSecond;
             _playerState = PlayerExposureState.Normal;
+            _playerPrefab = null;
+            _playerSpawnPosition = Vector3.zero;
         }
         _disguiseImmunityRemaining = 0f;
 
@@ -165,6 +173,7 @@ public class GameProcessManager : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        Debug.Log("StartGame");
         if (_isEnded || _isPlaying)
             ResetGame();
 
@@ -174,6 +183,14 @@ public class GameProcessManager : MonoBehaviour
         _exposureGrowthPerSecond = _normalGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
         ResetExposure();
+
+        if (_playerPrefab != null)
+        {
+            var player = Instantiate(_playerPrefab, _playerSpawnPosition, Quaternion.identity);
+            if (CameraController.Instance != null)
+                CameraController.Instance.BindTarget(player.transform);
+        }
+
         OnGameStart?.Invoke();
     }
 
