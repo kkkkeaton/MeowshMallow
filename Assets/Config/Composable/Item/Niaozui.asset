@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0906e5b834e18314bb5839cde56cf635, type: 3}
+  m_Name: Niaozui
+  m_EditorClassIdentifier: Assembly-CSharp::Composable
+  id: 5
+  name: niaozui
+  description: 
+  prefab: {fileID: 347106374108705673, guid: 40635e2e1eda7d3488052619d407f9fd, type: 3}
+  topoComponent: {fileID: 11400000, guid: 55681c6c58755494a9cc87a20a9dcdbb, type: 2}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0906e5b834e18314bb5839cde56cf635, type: 3}
+  m_Name: Hua
+  m_EditorClassIdentifier: Assembly-CSharp::Composable
+  id: 2
+  name: hua
+  description: 
+  prefab: {fileID: 347106374108705673, guid: 4dff5202e5e9155449ed0d7b0412f307, type: 3}
+  topoComponent: {fileID: 11400000, guid: b1d301f04f8c70b45a17cd6b7d834b4d, type: 2}

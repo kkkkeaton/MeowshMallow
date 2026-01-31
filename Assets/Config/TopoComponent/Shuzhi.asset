@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8be94c17574734eb7084874ed8608f, type: 3}
-  m_Name: Bar
+  m_Name: Shuzhi
   m_EditorClassIdentifier: Assembly-CSharp::TopoComponent
   typeId: 1
   prefab: {fileID: 7642359609434466413, guid: b9243c29ef1abe0479b5f4754824a9e4, type: 3}

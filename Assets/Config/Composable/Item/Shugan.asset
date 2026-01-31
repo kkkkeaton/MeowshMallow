@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0906e5b834e18314bb5839cde56cf635, type: 3}
-  m_Name: testComposable
+  m_Name: Shugan
   m_EditorClassIdentifier: Assembly-CSharp::Composable
-  id: 1
-  name: test
-  description: I am testing
-  prefab: {fileID: 347106374108705673, guid: faabcea102922f44285ccdd05a162c9c, type: 3}
-  topoComponent: {fileID: 11400000, guid: 2aa7e487909b3e84fa8662a874e7f4e3, type: 2}
+  id: 7
+  name: shugan
+  description: 
+  prefab: {fileID: 347106374108705673, guid: 3ddd9a552d5c9934aa826a3fa6484f98, type: 3}
+  topoComponent: {fileID: 11400000, guid: 47efdd1a18f3b1d44a0e278491a3ccd6, type: 2}

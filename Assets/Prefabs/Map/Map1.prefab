@@ -101,13 +101,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8219823778473828293}
     m_Modifications:
+    - target: {fileID: 2904987281437274468, guid: debc5b253472fd4f5855aca1fcb798bd, type: 3}
+      propertyPath: monsterId
+      value: 1002
+      objectReference: {fileID: 0}
     - target: {fileID: 4818705435343630781, guid: debc5b253472fd4f5855aca1fcb798bd, type: 3}
       propertyPath: m_Name
       value: SpawnPoint
       objectReference: {fileID: 0}
     - target: {fileID: 8474448168005564492, guid: debc5b253472fd4f5855aca1fcb798bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.08
+      value: 5.62
       objectReference: {fileID: 0}
     - target: {fileID: 8474448168005564492, guid: debc5b253472fd4f5855aca1fcb798bd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -211,6 +215,10 @@ PrefabInstance:
       propertyPath: _composable
       value: 
       objectReference: {fileID: 11400000, guid: e9f0936765cf0914f9cc70053488757c, type: 2}
+    - target: {fileID: 9222509972537171811, guid: f278fb04189bc624aa695c1f3701150f, type: 3}
+      propertyPath: _pickupRadius
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
