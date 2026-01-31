@@ -20,12 +20,14 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
     public bool IsAlive() => alive;
 
     /// <summary>由工厂在生成后调用，注入配置中的 id、maxHp、moveSpeed。</summary>
-    public void Init(string id, float hp, float speed)
+    public void Init(string id, float hp, float speed, string topo)
     {
         monsterId = id;
         maxHp = hp;
         moveSpeed = speed;
         currentHp = maxHp;
+        _maskCore = new MaskCore();
+        _maskCore.Parse(topo);
         alive = true;
     }
 
@@ -56,6 +58,35 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
     {
         var temp = GetMaskInfo();
         return temp.Compare(judgeMask);
+    }
+
+    
+    //调用此函数，自动输出自己的拓扑结构中的内容，要求说清楚自己有几张图，每张图有几个元素，每个元素有哪些属性，每个属性是怎样的，输出到控制台里
+    public void DebugTopo()
+    {
+        if (_maskCore == null)
+        {
+            UnityEngine.Debug.Log("[DebugTopo] 拓扑未初始化");
+            return;
+        }
+        for (int i = 0; i < _maskCore.UnitCount; i++)
+        {
+            string str = "";
+            str += $"图{i + 1}：";
+            var unit = _maskCore.GetUnit(i);
+            for (int j = 0; j < unit.ElementCount; j++)
+            {
+                var ele = unit.GetElement(j);
+                str += $"\n\t元素{j + 1}：";
+                str += $"\n\t\t类别 {ele.type}";
+                str += $"\n\t\t位置 ({ele.pos.x}, {ele.pos.y})";
+                str += $"\n\t\t是否考虑旋转角（0或1） {(ele.considerRotFlag ? 1 : 0)}";
+                str += $"\n\t\t旋转角（0~360） {ele.rot}";
+                var rotListStr = ele.rotList != null ? string.Join(", ", ele.rotList) : "";
+                str += $"\n\t\t旋转角相似列表 {rotListStr}";
+            }
+            Debug.Log(str);
+        }
     }
 
 }

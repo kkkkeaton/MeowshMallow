@@ -20,9 +20,10 @@ public static class MonsterFactory
         if (monster != null)
         {
             var maxHp = config.GetMaxHp(id);
-            var moveSpeed = config.GetMoveSpeed(id);
-            monster.Init(id, maxHp, moveSpeed);
-        }
+            var moveSpeed = config.GetMoveSpeed(id);    
+            var monserTopoConfig = config.GetTopoConfig(id);
+            monster.Init(id, maxHp, moveSpeed, monserTopoConfig);
+        }       
 
         return monster;
     }

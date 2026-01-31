@@ -145,7 +145,7 @@ public class Element
                     break;
                 case 5:
                     // 旋转角相似列表（可选）用^分割，范围0到360，不包括0和360
-                    rotList = new List<float>();
+                    rotList = new List<float> { 0f, 360f };
                     foreach (string seg in valueStr.Split('^'))
                     {
                         if (float.TryParse(seg, out float v) && v > 0f && v < 360f)
