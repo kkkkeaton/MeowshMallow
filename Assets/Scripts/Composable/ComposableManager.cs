@@ -9,8 +9,6 @@ public class ComposableManager : MonoBehaviour
 
     string playerTopoString = "";
 
-    MaskCore playerMaskCore;
-
     [SerializeField] AllComposableList allComposableList;
 
     Dictionary<int, Composable> composableConfigDictCache = new Dictionary<int, Composable>();
@@ -52,7 +50,7 @@ public class ComposableManager : MonoBehaviour
         int genId = _genId++;
         if (composableMono != null)
         {
-            composableMono.Init(composable, genId);
+            composableMono.Init(composable, genId,pos,rot);
             composableMonoDict[genId] = composableMono;
         }
         onGenerated?.Invoke(obj);
@@ -61,18 +59,47 @@ public class ComposableManager : MonoBehaviour
 
 
     //pos 0，1之间，rot，0到360之间    
+    //将生成的Composable添加到玩家的挂载点上
     public void GenPlayerNewComposable(Composable composableConfig,Vector2 pos,float rot)
     {
+        GenerateItemByTypeId(composableConfig.id, (obj) =>
+        {
+            if (obj != null)
+            {
+                obj.transform.SetParent(player.composableParent);
+                obj.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+                obj.transform.localRotation = Quaternion.Euler(0, 0, rot);
 
+                var ele = new Element("");
+                ele.type = composableConfig.topoComponent.id;
+                ele.pos = pos;
+                ele.rot = rot;
+                player.AddOneElement2Main(ele);
+                var str = "";
+                str += "类型：" + ele.type + "-" + "位置：" + ele.pos.x + "," + ele.pos.y + "-" + "旋转：" + ele.rot;
+                Debug.Log("添加Composable成功,genId:" + genId + "\n信息:\n" + str);
+            }
+        });
     }
 
     public void DeletePlayerComposable(int genId)
     {
         var composableMono = composableMonoDict[genId];
+        Composable composable;
+        Vector2 pos;
+        float rot;
+        composableMono.GetOriginalConfig(out composable, out pos, out rot);
+        bool isSuccess = player.TryRemoveOneElementFromMain(composable.topoComponent.id, pos, rot);
+        if (!isSuccess)
+        {
+            Debug.LogError("删除Composable失败,genId:" + genId);
+            return;
+        }
         if (composableMono != null)
         {
             composableMonoDict.Remove(genId);
             GameObject.Destroy(composableMono.gameObject);
+            Debug.Log("删除Composable成功,genId:" + genId);
         }
     }
 

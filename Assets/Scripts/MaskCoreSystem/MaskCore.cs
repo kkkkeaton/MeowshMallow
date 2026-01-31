@@ -77,6 +77,25 @@ public class MaskCore
 
     public int UnitCount => maskUnits?.Count ?? 0;
     public MaskCoreUnit GetUnit(int index) => maskUnits[index];
+
+    public void  AddOneElement2Main(Element element)
+    {
+        if( mainMaskUnit == null)
+        {
+            mainMaskUnit = new MaskCoreUnit();
+            mainMaskUnit.Parse("");
+        }
+        mainMaskUnit.AddOneElement(element);
+    }
+
+    public bool TryRemoveOneElementFromMain(int typeId,Vector2 pos,float rot)
+    {
+        if( mainMaskUnit == null)
+        {
+            return false;
+        }
+        return mainMaskUnit.TryRemoveOneElement(typeId, pos, rot);
+    }
 }
 
 public class MaskCoreUnit
@@ -100,6 +119,25 @@ public class MaskCoreUnit
 
     public int ElementCount => elements?.Count ?? 0;
     public Element GetElement(int index) => elements[index];
+
+    public void AddOneElement(Element element)
+    {
+        elements.Add(element);
+    }
+
+    public bool TryRemoveOneElement(int typeId,Vector2 pos,float rot)
+    {
+        for(int i = 0; i < elements.Count; i++)
+        {
+            var ele = elements[i];
+            if(ele.type == typeId && ele.pos == pos && ele.rot == rot)
+            {
+                elements.RemoveAt(i);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 
