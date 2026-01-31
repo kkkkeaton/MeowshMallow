@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 /// <summary>
@@ -12,10 +13,16 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [Header("调试（运行时检查一次）")]
     [SerializeField] private bool _logSetupWarnings = true;
 
-    [Header("放在 Player 附近判定（屏幕像素）")]
-    [SerializeField] private float _playerDropRadius = 80f;
+    [Header("放在 Player 附近判定与归一化范围（世界单位，X/Y 共用）")]
+    [SerializeField] private float _playerNearWorldRadius = 2f;
 
-    private TopoComponent _topoComponent;
+    [Header("拖拽时旋转")]
+    [Tooltip("拖入 Assets/InputSystem_Actions.inputactions")]
+    [SerializeField] private InputActionAsset _playerInputActions;
+    [SerializeField] private float _rotateSpeedDegPerSec = 90f;
+
+    private Composable _composable;
+    private InputAction _rotateAction;
 
     private RectTransform _rectTransform;
     private Canvas _canvas;
@@ -31,20 +38,25 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (_canvas != null && _canvas.renderMode != RenderMode.ScreenSpaceOverlay)
             _eventCamera = _canvas.worldCamera;
 
+        if (_playerInputActions != null)
+        {
+            var playerMap = _playerInputActions.FindActionMap("Player", true);
+            _rotateAction = playerMap.FindAction("RotateItem");
+        }
         if (_logSetupWarnings)
             CheckSetup();
     }
 
-    /// <summary>设置当前存储的 TopoComponent。</summary>
-    public void SetTopoComponent(TopoComponent topoComponent)
+    /// <summary>设置当前存储的 Composable。</summary>
+    public void SetComposable(Composable composable)
     {
-        _topoComponent = topoComponent;
+        _composable = composable;
     }
 
-    /// <summary>获取当前存储的 TopoComponent。</summary>
-    public TopoComponent GetTopoComponent()
+    /// <summary>获取当前存储的 Composable。</summary>
+    public Composable GetComposable()
     {
-        return _topoComponent;
+        return _composable;
     }
 
     /// <summary>检查拖拽能否被触发，缺配置时在 Console 里打一次提示。</summary>
@@ -93,6 +105,8 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
             _pointerStartInParent = localInParent;
             _pivotStartInParent = _dragClone.localPosition;
+            if (_rotateAction != null)
+                _rotateAction.Enable();
         }
     }
 
@@ -112,31 +126,67 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         }
     }
 
+    private void Update()
+    {
+        if (_dragClone == null) return;
+        if (_rotateAction != null && _rotateAction.IsPressed())
+            _dragClone.Rotate(0f, 0f, _rotateSpeedDegPerSec * Time.deltaTime);
+    }
+
     public void OnEndDrag(PointerEventData eventData)
     {
-        Vector2 dropScreenPos = eventData.position;
+        Camera cam = _eventCamera != null ? _eventCamera : Camera.main;
+        Vector3 playerWorldPos = God.Instance != null && God.Instance.Player != null
+            ? God.Instance.Player.transform.position
+            : Vector3.zero;
+
         bool isNearPlayer = false;
-        if (God.Instance != null && God.Instance.Player != null)
+        Vector2 relativeWorld = Vector2.zero;
+        if (God.Instance != null && God.Instance.Player != null && cam != null && _playerNearWorldRadius > 0f)
         {
-            Camera cam = _eventCamera != null ? _eventCamera : Camera.main;
-            if (cam != null)
+            // 用屏幕偏移 ÷ 相机在玩家处的“每世界单位像素数”，得到与 _playerNearWorldRadius 同单位的世界相对坐标
+            Vector3 playerScreen = cam.WorldToScreenPoint(playerWorldPos);
+            Vector2 dropScreen = eventData.position;
+            Vector2 screenDelta = dropScreen - (Vector2)playerScreen;
+            float pixelsPerWorldX = (cam.WorldToScreenPoint(playerWorldPos + Vector3.right) - playerScreen).x;
+            float pixelsPerWorldY = (cam.WorldToScreenPoint(playerWorldPos + Vector3.up) - playerScreen).y;
+            if (Mathf.Abs(pixelsPerWorldX) > 0.0001f && Mathf.Abs(pixelsPerWorldY) > 0.0001f)
             {
-                Vector3 playerWorldPos = God.Instance.Player.transform.position;
-                Vector3 playerScreenPos = cam.WorldToScreenPoint(playerWorldPos);
-                isNearPlayer = Vector2.Distance(dropScreenPos, (Vector2)playerScreenPos) <= _playerDropRadius;
+                relativeWorld.x = screenDelta.x / pixelsPerWorldX;
+                relativeWorld.y = screenDelta.y / pixelsPerWorldY;
+                isNearPlayer = relativeWorld.magnitude <= _playerNearWorldRadius;
             }
         }
 
+        if (isNearPlayer && cam != null && _dragClone != null && _playerNearWorldRadius > 0f)
+        {
+            // Screen Space - Overlay 下 UI 的 position 不是场景世界坐标，必须用 null 才能得到正确屏幕坐标
+            Camera camForUI = (_canvas != null && _canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : cam;
+            Vector3 playerScreen = cam.WorldToScreenPoint(playerWorldPos);
+            Vector2 cloneScreen = RectTransformUtility.WorldToScreenPoint(camForUI, _dragClone.position);
+            Vector2 screenDelta = cloneScreen - (Vector2)playerScreen;
+            float pixelsPerWorldX = (cam.WorldToScreenPoint(playerWorldPos + Vector3.right) - playerScreen).x;
+            float pixelsPerWorldY = (cam.WorldToScreenPoint(playerWorldPos + Vector3.up) - playerScreen).y;
+            if (Mathf.Abs(pixelsPerWorldX) > 0.0001f && Mathf.Abs(pixelsPerWorldY) > 0.0001f)
+            {
+                relativeWorld.x = screenDelta.x / pixelsPerWorldX;
+                relativeWorld.y = screenDelta.y / pixelsPerWorldY;
+                float r = _playerNearWorldRadius;
+                float normX = (relativeWorld.x + r) / (2f * r);
+                float normY = (relativeWorld.y + r) / (2f * r);
+                Vector2 normalized = new Vector2(normX, normY);
+
+                float rotationDeg = _dragClone.localEulerAngles.z;
+                Debug.Log($"[UIDraggable] 归一化坐标(左下0,0 右上1,1)={normalized}，拖拽物体旋转(度)={rotationDeg}");
+            }
+        }
+
+        if (_rotateAction != null)
+            _rotateAction.Disable();
         if (_dragClone != null)
         {
             Destroy(_dragClone.gameObject);
             _dragClone = null;
-        }
-
-        if (isNearPlayer)
-        {
-            // 放在 Player 附近时的逻辑（在此处填写）
-            Debug.Log("OnEndDrag called! isNearPlayer=" + isNearPlayer);
         }
     }
 }

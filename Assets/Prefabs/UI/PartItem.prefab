@@ -52,6 +52,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIDragToPlayer
   _logSetupWarnings: 0
   _playerDropRadius: 80
+  _normalizeScaleX: 2
+  _normalizeScaleY: 2
+  _playerInputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  _rotateSpeedDegPerSec: -180
 --- !u!222 &9031449669962790783
 CanvasRenderer:
   m_ObjectHideFlags: 0
