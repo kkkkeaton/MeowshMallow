@@ -154,7 +154,9 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             {
                 relativeWorld.x = screenDelta.x / pixelsPerWorldX;
                 relativeWorld.y = screenDelta.y / pixelsPerWorldY;
-                isNearPlayer = relativeWorld.magnitude <= _playerNearWorldRadius;
+                // 与后面归一化矩形一致：relativeWorld 在 [-r, r] x [-r, r] 内即为在附近
+                float r = _playerNearWorldRadius;
+                isNearPlayer = Mathf.Abs(relativeWorld.x) <= r && Mathf.Abs(relativeWorld.y) <= r;
             }
         }
 
