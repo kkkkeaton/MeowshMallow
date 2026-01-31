@@ -2,11 +2,13 @@ using UnityEngine;
 using System;
 
 /// <summary>2D 怪物实体：挂在与 Prefab 同级的 GameObject 上，实现 IMonster，负责血量、受击、死亡与死亡事件。</summary>
-public class MonsterBase : MonoBehaviour, IMonster
+public class MonsterBase : MonoBehaviour, IMonster,IMaskInfoAgent
 {
     [SerializeField] private string monsterId;   // 怪物类型 ID（可由工厂 Init 注入）
     [SerializeField] private float maxHp = 100f;
     [SerializeField] private float moveSpeed = 1f;
+
+    private MaskCore _maskCore; 
 
     private float currentHp;  // 当前血量
     private bool alive = true;
@@ -42,4 +44,18 @@ public class MonsterBase : MonoBehaviour, IMonster
         OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
+
+
+    public virtual MaskCore GetMaskInfo()
+    {
+        return _maskCore;
+    }
+
+
+    public virtual float JudgeMaskInfo(MaskCore judgeMask)
+    {
+        var temp = GetMaskInfo();
+        return temp.Compare(judgeMask);
+    }
+
 }
