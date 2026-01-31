@@ -29,6 +29,7 @@ namespace MeowshMallow
 
         private Rigidbody2D _rb;
         private InputAction _moveAction;
+        private InputAction _interactAction;
         private Vector2 _moveInput;
         private Vector2 _currentVelocity;
 
@@ -44,24 +45,69 @@ namespace MeowshMallow
 
             var playerMap = playerInputActions.FindActionMap("Player", true);
             _moveAction = playerMap.FindAction("Move", true);
+            _interactAction = playerMap.FindAction("Interact", true);
         }
 
         private void OnEnable()
         {
             if (_rb != null)
                 _currentVelocity = _rb.linearVelocity;
-            if (_moveAction == null) return;
-            _moveAction.Enable();
-            _moveAction.performed += OnMovePerformed;
-            _moveAction.canceled += OnMoveCanceled;
+            if (_moveAction != null)
+            {
+                _moveAction.Enable();
+                _moveAction.performed += OnMovePerformed;
+                _moveAction.canceled += OnMoveCanceled;
+            }
+            if (_interactAction != null)
+            {
+                _interactAction.Enable();
+                _interactAction.performed += OnInteractPerformed;
+            }
         }
 
         private void OnDisable()
         {
-            if (_moveAction == null) return;
-            _moveAction.performed -= OnMovePerformed;
-            _moveAction.canceled -= OnMoveCanceled;
-            _moveAction.Disable();
+            if (_moveAction != null)
+            {
+                _moveAction.performed -= OnMovePerformed;
+                _moveAction.canceled -= OnMoveCanceled;
+                _moveAction.Disable();
+            }
+            if (_interactAction != null)
+            {
+                _interactAction.performed -= OnInteractPerformed;
+                _interactAction.Disable();
+            }
+        }
+
+        private void OnInteractPerformed(InputAction.CallbackContext context)
+        {
+            Vector3 playerPos = transform.position;
+            PickableItem closest = null;
+            float closestDist = float.MaxValue;
+
+            var items = FindObjectsOfType<PickableItem>();
+            int inRange = 0;
+            foreach (var item in items)
+            {
+                float dist = Vector3.Distance(playerPos, item.transform.position);
+                if (dist <= item.PickupRadius)
+                {
+                    inRange++;
+                    if (dist < closestDist)
+                    {
+                        closestDist = dist;
+                        closest = item;
+                    }
+                }
+            }
+
+            Debug.Log($"[PlayerMovement] 按 E：场景内 PickableItem 共 {items.Length} 个，在范围内的 {inRange} 个。");
+            if (closest != null)
+            {
+                Debug.Log("[PlayerMovement] 捡起最近的可捡物体。");
+                closest.DoPickup();
+            }
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)
