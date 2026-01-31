@@ -120,6 +120,18 @@ public class ComposableManager : MonoBehaviour
         }
     }
 
+/// <summary>删除玩家的全部Composable</summary>
+    public void ClearAllPlayerComposable()
+    {
+        foreach (var composableMono in playerComposableList)
+        {
+            var genId = composableMono.GetGenId();
+            DeletePlayerComposable(genId);
+        }
+        playerComposableList.Clear();
+    }
+
+
 
 
 }
