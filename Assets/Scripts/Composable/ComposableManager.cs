@@ -23,7 +23,7 @@ public class ComposableManager : MonoBehaviour
         player = FindFirstObjectByType<Player>();
     }
 
-    private void GenerateItemByTypeId(int id, Action<GameObject> onGenerated)
+    private void GenerateItemByTypeId(int id,Vector2 pos,float rot, Action<GameObject> onGenerated)
     {
         if (allComposableList == null)
             allComposableList = Resources.Load<AllComposableList>("AllComposableList");
@@ -62,7 +62,7 @@ public class ComposableManager : MonoBehaviour
     //将生成的Composable添加到玩家的挂载点上
     public void GenPlayerNewComposable(Composable composableConfig,Vector2 pos,float rot)
     {
-        GenerateItemByTypeId(composableConfig.id, (obj) =>
+        GenerateItemByTypeId(composableConfig.id,pos,rot, (obj) =>
         {
             if (obj != null)
             {
@@ -77,7 +77,7 @@ public class ComposableManager : MonoBehaviour
                 player.AddOneElement2Main(ele);
                 var str = "";
                 str += "类型：" + ele.type + "-" + "位置：" + ele.pos.x + "," + ele.pos.y + "-" + "旋转：" + ele.rot;
-                Debug.Log("添加Composable成功,genId:" + genId + "\n信息:\n" + str);
+                Debug.Log("添加Composable成功:" + "\n信息:\n" + str);
             }
         });
     }
