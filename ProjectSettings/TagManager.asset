@@ -38,9 +38,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: BG
     uniqueID: 883647649
     locked: 0
@@ -49,6 +46,9 @@ TagManager:
     locked: 0
   - name: MapItem
     uniqueID: 1755145661
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: Enemy
     uniqueID: 3397630571
