@@ -137,6 +137,10 @@ public class MonsterAI : MonoBehaviour
                 if (_currentDetectionValue >= _detectionMaxValue)
                 {
                     _currentDetectionValue = _detectionMaxValue;
+                    // 识破值满：进入暴露状态（切换 BGM 与暴露增速）
+                    var process = God.Instance?.Get<GameProcessManager>();
+                    if (process != null)
+                        process.EnterSpotted();
                     var exposure = PlayerExposure.Instance;
                     if (exposure != null)
                         exposure.AddExposureForMonsterType(_monster.GetId(), 1f); // 暴露值增加量可后续改为配置
