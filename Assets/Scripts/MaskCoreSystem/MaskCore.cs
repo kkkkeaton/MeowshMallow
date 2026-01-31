@@ -34,7 +34,7 @@ static class CompareLogicCore
             rotCompareResult = 1 - minRotSub / 360;
         }
 
-        Debug.Log($"typeCompareResult: {typeCompareResult}, posCompareReslt: {posCompareReslt}, rotCompareResult: {rotCompareResult}");
+        // Debug.Log($"typeCompareResult: {typeCompareResult}, posCompareReslt: {posCompareReslt}, rotCompareResult: {rotCompareResult}");
 
         return typeCompareResult*posCompareReslt*rotCompareResult;
 
