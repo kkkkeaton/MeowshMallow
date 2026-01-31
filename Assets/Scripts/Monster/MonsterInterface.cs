@@ -10,3 +10,4 @@ public interface IMonster
     /// <summary>是否仍存活。</summary>
     bool IsAlive();
 }
+
