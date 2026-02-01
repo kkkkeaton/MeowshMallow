@@ -319,10 +319,11 @@ public class MonsterAI : MonoBehaviour
     /// <summary>识破值是否已满（满时玩家不可暗杀此怪）。</summary>
     public bool IsDetectionFull() => _currentDetectionValue >= _detectionMaxValue;
 
-    /// <summary>显示 suspect（警觉符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。</summary>
+    /// <summary>显示 suspect（警觉符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。与 bark 互斥，显示前会先隐藏 bark。</summary>
     private void ShowSuspect()
     {
         if (_suspect == null) return;
+        HideBark(); // 与叹号互斥，避免问号与叹号同时出现
         if (_suspect.activeSelf) return; // 已显示则不重新播放
         if (_suspectCoroutine != null) StopCoroutine(_suspectCoroutine);
         _suspectCoroutine = StartCoroutine(ShowSymbolRoutine(_suspect, _suspectAnimator, _symbolInState, _symbolLoopState));
@@ -340,10 +341,11 @@ public class MonsterAI : MonoBehaviour
         _suspect.SetActive(false);
     }
 
-    /// <summary>显示 bark（发现符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。</summary>
+    /// <summary>显示 bark（发现符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。与 suspect 互斥，显示前会先隐藏 suspect。</summary>
     private void ShowBark()
     {
         if (_bark == null) return;
+        HideSuspect(); // 与问号互斥，避免问号与叹号同时出现
         if (_bark.activeSelf) return; // 已显示则不重新播放
         if (_barkCoroutine != null) StopCoroutine(_barkCoroutine);
         _barkCoroutine = StartCoroutine(ShowSymbolRoutine(_bark, _barkAnimator, _barkInState, _barkLoopState));
