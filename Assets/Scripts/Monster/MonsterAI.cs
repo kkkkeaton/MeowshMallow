@@ -61,8 +61,11 @@ public class MonsterAI : MonoBehaviour
     private AudioClip _discoverSfx;
     private AudioClip _spottedSfx;
 
-    /// <summary>当前识破值（0 ~ 满值）。</summary>
+    /// <summary>当前识破值（0 ~ 满值）；满后不立刻清零，等死亡或丢失视野后清零。</summary>
     private float _currentDetectionValue;
+
+    /// <summary>识破值满后已触发过 EnterSpotted/AddExposure，避免重复；丢失视野或死亡时重置。</summary>
+    private bool _hasTriggeredDetectionFull;
 
     /// <summary>Idle=待机 Approaching=接近中 Observing=观察中 Disengaged=玩家已离开探测范围，待玩家再次进入后重新跟随</summary>
     private enum State { Idle, Approaching, Observing, Disengaged }
@@ -165,6 +168,8 @@ public class MonsterAI : MonoBehaviour
         {
             God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
             _state = State.Idle;
+            _currentDetectionValue = 0f;
+            _hasTriggeredDetectionFull = false;
             emojiConfused.SetActive(false);
             return;
         }
@@ -188,6 +193,7 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Disengaged;
                     _currentDetectionValue = 0f;
+                    _hasTriggeredDetectionFull = false;
                     God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
@@ -202,7 +208,8 @@ public class MonsterAI : MonoBehaviour
                 }
                 Vector2 dir = (playerPos - myPos).normalized;
                 transform.position = Vector2.MoveTowards(myPos, playerPos - dir * _approachDistance, _moveSpeed * Time.deltaTime);
-                _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
+                if (_currentDetectionValue < _detectionMaxValue)
+                    _currentDetectionValue = Mathf.Min(_currentDetectionValue + _detectionFillRatePerSecond * Time.deltaTime, _detectionMaxValue);
                 TryTriggerDetectionFull();
                 TryPlayMoveSfx();
                 break;
@@ -212,12 +219,14 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Disengaged;
                     _currentDetectionValue = 0f;
+                    _hasTriggeredDetectionFull = false;
                     God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
                 FacePlayer(myPos, playerPos);
-                _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
+                if (_currentDetectionValue < _detectionMaxValue)
+                    _currentDetectionValue = Mathf.Min(_currentDetectionValue + _detectionFillRatePerSecond * Time.deltaTime, _detectionMaxValue);
                 TryTriggerDetectionFull();
                 break;
 
@@ -263,11 +272,13 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值；闪一下 bark、播识破音效。仅在 Approaching/Observing 中累积后调用。</summary>
+    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值；闪 bark、播识破音效。识破值不立刻清零，等怪物死亡或丢失视野后清零。</summary>
     private void TryTriggerDetectionFull()
     {
         if (_currentDetectionValue < _detectionMaxValue) return;
         _currentDetectionValue = _detectionMaxValue;
+        if (_hasTriggeredDetectionFull) return;
+        _hasTriggeredDetectionFull = true;
         FlashBark();
         PlaySpottedSfx();
         var process = God.Instance?.Get<GameProcessManager>();
@@ -276,8 +287,10 @@ public class MonsterAI : MonoBehaviour
         var exposure = PlayerExposure.Instance;
         if (exposure != null)
             exposure.AddExposureForMonsterType(_monster.GetId(), 1f);
-        _currentDetectionValue = 0f;
     }
+
+    /// <summary>识破值是否已满（满时玩家不可暗杀此怪）。</summary>
+    public bool IsDetectionFull() => _currentDetectionValue >= _detectionMaxValue;
 
     /// <summary>进入追踪或观察时闪一下 suspect（警觉状态表现）。</summary>
     private void FlashSuspect()
@@ -332,10 +345,11 @@ public class MonsterAI : MonoBehaviour
         _currentDetectionValue = Mathf.Max(0f, _currentDetectionValue - amount);
     }
 
-    /// <summary>将识破值设为 0。</summary>
+    /// <summary>将识破值设为 0，并重置满值触发标记。</summary>
     public void ResetDetectionValue()
     {
         _currentDetectionValue = 0f;
+        _hasTriggeredDetectionFull = false;
     }
 
     /// <summary>当前识破值（只读）。</summary>

@@ -79,6 +79,8 @@ public class PlayerRangeDetector : MonoBehaviour
         foreach (var monster in alive)
         {
             if (monster == null || !monster.IsAlive()) continue;
+            var ai = monster.GetComponent<MonsterAI>();
+            if (ai != null && ai.IsDetectionFull()) continue; // 识破值满的怪不可暗杀
             float sqDist = (pos - (Vector2)monster.transform.position).sqrMagnitude;
             if (sqDist <= closestSq)
             {
