@@ -257,6 +257,8 @@ public class GameProcessManager : MonoBehaviour
 
         PlayNormalBgm();
 
+        God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(false);
+
         OnGameStart?.Invoke();
     }
 
@@ -329,6 +331,7 @@ public class GameProcessManager : MonoBehaviour
         _exposureGrowthPerSecond = _normalGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
         PlayNormalBgm();
+        God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(false);
     }
 
     /// <summary>
@@ -340,6 +343,7 @@ public class GameProcessManager : MonoBehaviour
         _exposureGrowthPerSecond = _spottedGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
         PlayDangerBgm();
+        God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(true);
     }
 
     private void PlayNormalBgm()
@@ -356,13 +360,17 @@ public class GameProcessManager : MonoBehaviour
 
     /// <summary>
     /// 切换到伪装成功：立即减少一定暴露值，并在配置的时长内不再增加暴露值，结束后自动回到正常。
+    /// 若已在伪装成功状态则不再重复触发。
     /// </summary>
     public void EnterDisguiseSuccess()
     {
+        if (_playerState == PlayerExposureState.DisguiseImmunity)
+            return;
         SubtractExposure(_disguiseSuccessExposureDecrease);
         _playerState = PlayerExposureState.DisguiseImmunity;
         _exposureGrowthPerSecond = 0f;
         _disguiseImmunityRemaining = _disguiseSuccessImmunityDuration;
+        God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(false);
     }
 
     /// <summary>获取当前玩家暴露状态。</summary>

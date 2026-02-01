@@ -242,7 +242,7 @@ public class UIManager : MonoBehaviour
     public void SetEnvPanelSpotted(bool isSpotted)
     {
         if (_envPanelImage == null) return;
-        _envPanelImage.color = isSpotted ? Color.red : Color.black;
+        _envPanelImage.color = isSpotted ? new Color(0.827f, 0.153f, 0.239f) : Color.black;
     }
 
     /// <summary>在指定节点下查找第一个 Text 或 TextMeshProUGUI 子物体并设置其文本。</summary>
