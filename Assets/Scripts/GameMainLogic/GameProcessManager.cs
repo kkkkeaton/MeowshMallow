@@ -91,8 +91,14 @@ public class GameProcessManager : MonoBehaviour
     /// <summary>玩法开始时触发。</summary>
     public event Action OnGameStart;
 
-    /// <summary>玩法结束时触发。</summary>
+    /// <summary>玩法结束时触发（失败或胜利后都会触发）。</summary>
     public event Action OnGameEnd;
+
+    /// <summary>游戏失败时触发（暴露值满时）。</summary>
+    public event Action OnGameOver;
+
+    /// <summary>游戏胜利时触发（玩家进入胜利区域时）。</summary>
+    public event Action OnVictory;
 
     /// <summary>暴露值发生变化时触发，参数为 (当前值, 归一化 0~1)。</summary>
     public event Action<float, float> OnExposureChanged;
@@ -225,7 +231,10 @@ public class GameProcessManager : MonoBehaviour
         }
 
         if (_config != null && _config.MapPrefab != null)
-            Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
+        {
+            var mapInstance = Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
+            SetCameraConfinerFromMap(mapInstance);
+        }
 
         PlayNormalBgm();
 
@@ -234,7 +243,7 @@ public class GameProcessManager : MonoBehaviour
 
     /// <summary>
     /// 结束玩法。停止暴露值增长，触发 OnGameEnd。
-    /// 可由外部调用（如玩家放弃），或由本管理器在暴露值满时自动调用。
+    /// 可由外部调用（如玩家放弃），或由本管理器在暴露值满/胜利时自动调用。
     /// </summary>
     public void EndGame()
     {
@@ -243,6 +252,17 @@ public class GameProcessManager : MonoBehaviour
         _isEnded = true;
         _isPlaying = false;
         OnGameEnd?.Invoke();
+    }
+
+    /// <summary>
+    /// 触发游戏胜利。由玩家进入胜利区域时（如 PlayerMovement）调用，会先触发 OnVictory 再 EndGame。
+    /// </summary>
+    public void TriggerVictory()
+    {
+        if (_isEnded) return;
+        Debug.Log("TriggerVictory");
+        OnVictory?.Invoke();
+        EndGame();
     }
 
     /// <summary>
@@ -256,6 +276,27 @@ public class GameProcessManager : MonoBehaviour
         _playerState = PlayerExposureState.Normal;
         _disguiseImmunityRemaining = 0f;
         ResetExposure();
+    }
+
+    /// <summary>
+    /// 从地图实例中查找名为 "border" 的物体，取其 Collider2D 并设置到 CinemachineConfiner2D。
+    /// </summary>
+    private void SetCameraConfinerFromMap(GameObject mapInstance)
+    {
+        if (mapInstance == null) return;
+        Transform border = mapInstance.transform.Find("border");
+        if (border == null)
+        {
+            foreach (Transform t in mapInstance.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "border") { border = t; break; }
+            }
+        }
+        if (border == null) return;
+        var col = border.GetComponent<Collider2D>();
+        if (col == null) col = border.GetComponentInChildren<Collider2D>(true);
+        if (col != null && CameraController.Instance != null)
+            CameraController.Instance.SetConfinerBoundary(col);
     }
 
     // ---------- 玩家状态切换（公开） ----------
@@ -395,7 +436,10 @@ public class GameProcessManager : MonoBehaviour
         float actual = _currentExposure - oldVal;
         NotifyExposureChanged();
         if (IsExposureFull())
+        {
+            OnGameOver?.Invoke();
             EndGame();
+        }
         return actual;
     }
 
@@ -426,7 +470,11 @@ public class GameProcessManager : MonoBehaviour
         if (Mathf.Approximately(_currentExposure, oldVal)) return;
         NotifyExposureChanged();
         if (IsPlaying && IsExposureFull())
+        {
+            Debug.Log("GameOver");
+            OnGameOver?.Invoke();
             EndGame();
+        }
     }
 
     /// <summary>
@@ -451,7 +499,10 @@ public class GameProcessManager : MonoBehaviour
             _currentExposure = _maxExposure;
             NotifyExposureChanged();
             if (IsPlaying)
+            {
+                OnGameOver?.Invoke();
                 EndGame();
+            }
         }
         else
             SyncExposureToUI();

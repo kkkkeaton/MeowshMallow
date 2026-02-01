@@ -36,6 +36,10 @@ namespace MeowshMallow
         [Tooltip("水源区域的碰撞体 Tag，进入后按交互键可将玩家颜色改为 2")]
         [SerializeField] private string waterSourceTag = "WaterSource";
 
+        [Header("胜利区域")]
+        [Tooltip("胜利区域的碰撞体 Tag，进入后触发游戏胜利")]
+        [SerializeField] private string winZoneTag = "WinZone";
+
         [SerializeField] private AnimationCurve moveSpeedCurve;
 
         [SerializeField] private float moveCurveOneTime = 1f;
@@ -143,11 +147,17 @@ namespace MeowshMallow
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!string.IsNullOrEmpty(waterSourceTag) && other.CompareTag(waterSourceTag)){
+            if (!string.IsNullOrEmpty(waterSourceTag) && other.CompareTag(waterSourceTag))
+            {
                 _waterSourceTriggerCount++;
                 Debug.Log($"[PlayerMovement] 进入水源区域，当前水源触发计数: {_waterSourceTriggerCount}");
             }
-                
+            if (!string.IsNullOrEmpty(winZoneTag) && other.CompareTag(winZoneTag))
+            {
+                var process = God.Instance?.Get<GameProcessManager>();
+                if (process != null && process.IsPlaying)
+                    process.TriggerVictory();
+            }
         }
 
         private void OnTriggerExit2D(Collider2D other)

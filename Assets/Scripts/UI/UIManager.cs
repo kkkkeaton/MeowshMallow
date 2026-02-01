@@ -10,8 +10,19 @@ public class UIManager : MonoBehaviour
     /// <summary>规定的 MainUI 预制体，Awake 时会在场景中实例化。</summary>
     [SerializeField] private GameObject _mainUIPrefab;
 
+    [Header("主菜单 / 胜利·失败")]
+    [Tooltip("主菜单预制体，游戏一开始就显示，内有 StartButton 开始游戏")]
+    [SerializeField] private GameObject _mainMenuPrefab;
+    [Tooltip("胜利界面预制体，内有 BackHomeButton 返回主菜单")]
+    [SerializeField] private GameObject _victoryUIPrefab;
+    [Tooltip("失败界面预制体，内有 BackHomeButton 返回主菜单")]
+    [SerializeField] private GameObject _failureUIPrefab;
+
     /// <summary>MainUI 实例，创建后缓存。</summary>
     private GameObject _mainUIInstance;
+    private GameObject _mainMenuInstance;
+    private GameObject _victoryUIInstance;
+    private GameObject _failureUIInstance;
 
     /// <summary>暴露值 Slider，从 MainUI 子物体中遍历查找得到。</summary>
     private Slider _exposedValueSlider;
@@ -40,8 +51,114 @@ public class UIManager : MonoBehaviour
             RefreshRangeHintRefs();
             BindTBtnClearComposable();
         }
+
+        if (_mainMenuPrefab != null)
+        {
+            _mainMenuInstance = CreateUI(_mainMenuPrefab);
+            _mainMenuInstance.SetActive(true);
+        }
+
+        if (_victoryUIPrefab != null)
+        {
+            _victoryUIInstance = CreateUI(_victoryUIPrefab);
+            _victoryUIInstance.SetActive(false);
+        }
+
+        if (_failureUIPrefab != null)
+        {
+            _failureUIInstance = CreateUI(_failureUIPrefab);
+            _failureUIInstance.SetActive(false);
+        }
+
+        if (_mainMenuInstance != null && _mainUIInstance != null)
+            _mainUIInstance.SetActive(false);
+
         SetPickableHintVisible(false);
         SetAssassinationHintVisible(false);
+    }
+
+    private void Start()
+    {
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process != null)
+        {
+            process.OnVictory += OnGameVictory;
+            process.OnGameOver += OnGameOver;
+        }
+        BindMainMenuStartButton();
+        BindBackHomeButton(_victoryUIInstance);
+        BindBackHomeButton(_failureUIInstance);
+    }
+
+    private void OnDestroy()
+    {
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process != null)
+        {
+            process.OnVictory -= OnGameVictory;
+            process.OnGameOver -= OnGameOver;
+        }
+    }
+
+    private void OnGameVictory()
+    {
+        if (_victoryUIInstance != null)
+            _victoryUIInstance.SetActive(true);
+    }
+
+    private void OnGameOver()
+    {
+        if (_failureUIInstance != null)
+            _failureUIInstance.SetActive(true);
+    }
+
+    private void BindMainMenuStartButton()
+    {
+        if (_mainMenuInstance == null) return;
+        var btn = FindButtonInChildren(_mainMenuInstance.transform, "StartButton");
+        if (btn != null)
+            btn.onClick.AddListener(OnStartButtonClicked);
+    }
+
+    private void OnStartButtonClicked()
+    {
+        if (_mainMenuInstance != null)
+            _mainMenuInstance.SetActive(false);
+        if (_mainUIInstance != null)
+            _mainUIInstance.SetActive(true);
+        God.Instance?.Get<GameProcessManager>()?.StartGame();
+    }
+
+    private void BindBackHomeButton(GameObject root)
+    {
+        if (root == null) return;
+        var btn = FindButtonInChildren(root.transform, "BackHomeButton");
+        if (btn != null)
+            btn.onClick.AddListener(OnBackHomeButtonClicked);
+    }
+
+    private void OnBackHomeButtonClicked()
+    {
+        if (_victoryUIInstance != null)
+            _victoryUIInstance.SetActive(false);
+        if (_failureUIInstance != null)
+            _failureUIInstance.SetActive(false);
+        if (_mainUIInstance != null)
+            _mainUIInstance.SetActive(false);
+        if (_mainMenuInstance != null)
+            _mainMenuInstance.SetActive(true);
+    }
+
+    private static Button FindButtonInChildren(Transform root, string buttonName)
+    {
+        if (root == null) return null;
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (t.name != buttonName) continue;
+            var btn = t.GetComponent<Button>();
+            if (btn != null) return btn;
+        }
+        return null;
     }
 
     /// <summary>从 MainUI 中查找名为 "T_Btn" 的节点，为其上的按钮绑定点击时调用 ClearAllPlayerComposable。</summary>

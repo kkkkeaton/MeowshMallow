@@ -463,6 +463,7 @@ GameObject:
   - component: {fileID: 1327839251}
   - component: {fileID: 1327839250}
   - component: {fileID: 1327839249}
+  - component: {fileID: 1327839253}
   - component: {fileID: 1327839252}
   m_Layer: 0
   m_Name: CinemachineCamera
@@ -572,6 +573,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fad93acbf1340a4ba33be507a6d5ce3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  _cameraBoundary: {fileID: 0}
+--- !u!114 &1327839253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327839248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineConfiner2D
+  BoundingShape2D: {fileID: 0}
+  Damping: 0.5
+  SlowingDistance: 5
+  OversizeWindow:
+    Enabled: 0
+    MaxWindowSize: 0
+    Padding: 0
+  m_LegacyMaxWindowSize: -2
 --- !u!1 &1618683469
 GameObject:
   m_ObjectHideFlags: 0
