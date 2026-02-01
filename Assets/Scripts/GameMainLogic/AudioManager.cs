@@ -52,13 +52,16 @@ public class AudioManager : MonoBehaviour
             var sources = GetComponents<AudioSource>();
             _sfxSource = sources.Length > 1 ? sources[1] : _bgmSource;
         }
-
-        if (God.Instance != null)
-            God.Instance.Add(this);
     }
 
     private void Start()
     {
+        // 在 Start 中注册，确保 God 已存在（避免 Awake 执行顺序导致注册失败）
+        if (God.Instance != null)
+            God.Instance.Add(this);
+        else
+            Debug.LogWarning("[AudioManager] God.Instance 为空，未能注册；游戏音频将不可用。请确认场景中有 Launcher 且已指定 GodManager 预制体。", this);
+
         SubscribeToGameEvents();
     }
 
@@ -127,6 +130,16 @@ public class AudioManager : MonoBehaviour
         PlayBgmWithCrossfade(_dangerBgm);
     }
 
+    /// <summary>确保 AudioSource 及其 GameObject 已启用，再调用 Play 才有效。</summary>
+    private static void EnsureAudioSourceEnabled(AudioSource source)
+    {
+        if (source == null) return;
+        if (!source.gameObject.activeSelf)
+            source.gameObject.SetActive(true);
+        if (!source.enabled)
+            source.enabled = true;
+    }
+
     /// <summary>切换到指定 BGM：若配置了副音源则交叉淡入淡出，否则硬切。</summary>
     private void PlayBgmWithCrossfade(AudioClip clip)
     {
@@ -134,6 +147,7 @@ public class AudioManager : MonoBehaviour
         {
             if (_bgmSource != null)
             {
+                EnsureAudioSourceEnabled(_bgmSource);
                 _bgmSource.clip = clip;
                 _bgmSource.loop = true;
                 _bgmSource.volume = 1f;
@@ -148,6 +162,7 @@ public class AudioManager : MonoBehaviour
 
         if (_bgmSourceSecondary == null || _bgmCrossfadeDuration <= 0f)
         {
+            EnsureAudioSourceEnabled(_currentBgmSource);
             _currentBgmSource.clip = clip;
             _currentBgmSource.loop = true;
             _currentBgmSource.volume = 1f;
@@ -161,6 +176,8 @@ public class AudioManager : MonoBehaviour
         AudioSource from = _currentBgmSource;
         AudioSource to = _currentBgmSource == _bgmSource ? _bgmSourceSecondary : _bgmSource;
 
+        EnsureAudioSourceEnabled(from);
+        EnsureAudioSourceEnabled(to);
         to.clip = clip;
         to.loop = true;
         to.volume = 0f;

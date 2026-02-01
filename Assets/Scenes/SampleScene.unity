@@ -226,7 +226,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -528,7 +528,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 34
-    OrthographicSize: 3
+    OrthographicSize: 8
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -573,6 +573,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fad93acbf1340a4ba33be507a6d5ce3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  _defaultLensSize: 8
+  _dragLensSize: 3
+  _zoomTransitionDuration: 0.25
 --- !u!114 &1327839253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -638,6 +641,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1978375333
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.48612
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -12.65285
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631846220167036863, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4391013242849191029, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
+      propertyPath: m_Name
+      value: GodManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 187f6caee3259ef4493bf89646a2517a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -647,3 +707,4 @@ SceneRoots:
   - {fileID: 1327839251}
   - {fileID: 1618683471}
   - {fileID: 1260419296}
+  - {fileID: 1978375333}

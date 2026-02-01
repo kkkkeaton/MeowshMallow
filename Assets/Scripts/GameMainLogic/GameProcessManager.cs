@@ -346,16 +346,28 @@ public class GameProcessManager : MonoBehaviour
         God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(true);
     }
 
+    private static bool _hasWarnedAudioManagerNull;
+
     private void PlayNormalBgm()
     {
         var audio = God.Instance?.Get<AudioManager>();
-        audio?.PlayNormalBgm();
+        if (audio == null)
+        {
+            if (!_hasWarnedAudioManagerNull)
+            {
+                _hasWarnedAudioManagerNull = true;
+                Debug.LogWarning("[GameProcessManager] AudioManager 未找到，BGM 无法播放。请确认 Launcher 已指定 GodManager 预制体且场景中有 AudioListener。");
+            }
+            return;
+        }
+        audio.PlayNormalBgm();
     }
 
     private void PlayDangerBgm()
     {
         var audio = God.Instance?.Get<AudioManager>();
-        audio?.PlayDangerBgm();
+        if (audio != null)
+            audio.PlayDangerBgm();
     }
 
     /// <summary>

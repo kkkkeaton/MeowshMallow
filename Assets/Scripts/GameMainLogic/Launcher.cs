@@ -9,7 +9,11 @@ public class Launcher : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
-        if (godManagerObj == null) return;
+        if (godManagerObj == null)
+        {
+            Debug.LogError("[Launcher] 未指定 GodManager 预制体（godManagerObj），God/AudioManager/GameProcessManager 等将不会创建，游戏无法正常进行。请在 Inspector 中拖入 GodManager 预制体。", this);
+            return;
+        }
 
         var instance = Instantiate(godManagerObj);
         instance.name = "GodManager";
