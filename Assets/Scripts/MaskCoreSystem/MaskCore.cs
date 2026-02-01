@@ -56,7 +56,13 @@ public class MaskCore
 
     public void Parse(string info, bool force)
     {
-        LogInfo = info;
+        LogInfo = info ?? "";
+        if (string.IsNullOrWhiteSpace(info))
+        {
+            maskUnits = new List<MaskCoreUnit>();
+            mainMaskUnit = null;
+            return;
+        }
         string[] stringUnits = info.Split('|');
         maskUnits = new List<MaskCoreUnit>();
 
@@ -74,11 +80,15 @@ public class MaskCore
     //将自己的多个Mask单元与对方的主Mask进行比较，返回最高相似度
     public float Compare(MaskCore other)
     {
-        if (other == null) 
+        if (other == null)
         {
             Debug.LogWarning($"[MaskCore] 对方Mask为空，无法比较");
             return 0;
         }
+        if (UnitCount == 0 && other.UnitCount == 0)
+            return 1f;
+        if (UnitCount == 0 || other.UnitCount == 0)
+            return 0f;
         float maxSimilarity = 0;
         foreach (var unit in maskUnits)
         {
@@ -185,7 +195,7 @@ public class MaskCoreUnit
         float sum = 0f;
         for (int i = 0; i < ListTemp.Count; i++) sum += ListTemp[i];
         //Log出临时表判断情况
-        Debug.Log($"[MaskCoreUnit] 临时表情况: {string.Join(", ", ListTemp)}");
+        // Debug.Log($"[MaskCoreUnit] 临时表情况: {string.Join(", ", ListTemp)}");
         return sum / ListTemp.Count;
     }
 }

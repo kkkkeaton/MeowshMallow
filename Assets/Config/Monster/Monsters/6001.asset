@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6df77cd93df5dd34381a0feb123e650f, type: 3}
-  m_Name: 1002
+  m_Name: 6001
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfigData
-  id: 1002
-  prefab: {fileID: 2156231962596082936, guid: 2130618c10948ec4785e9ad6927b7a62, type: 3}
+  id: 6001
+  prefab: {fileID: 2156231962596082936, guid: 7651f0832ca0a454598f7012cc7c4493, type: 3}
   maxHp: 100
   moveSpeed: 1
   detectionRange: 8
@@ -22,5 +22,5 @@ MonoBehaviour:
   detectionMaxValue: 100
   colorId: 1
   sameTypeThreshold: 0.38
-  monsterTopoConfig: 1@1-2@0.329^0.6815-3@1-4@87.4-5@180;1@1-2@0.6895^0.6865-3@1-4@351.7-5@180;1@1-2@0.3055^0.4895-3@1-4@153.3-5@180;1@1-2@0.699^0.4975-3@1-4@288.1-5@180
-  dropComposable: {fileID: 11400000, guid: c3ea1990916937f48868971b43857b7b, type: 2}
+  monsterTopoConfig: 1@10-2@0.5015^0.559-3@1-4@0;1@5-2@0.642^0.6525-3@1-4@217.5-5@120^240;1@5-2@0.6055^0.474-3@1-4@134-5@120^240;1@5-2@0.3975^0.472-3@1-4@46.7-5@120^240;1@5-2@0.363^0.65-3@1-4@328.5-5@120^240;1@5-2@0.5^0.719-3@1-4@271.1-5@120^240
+  dropComposable: {fileID: 0}

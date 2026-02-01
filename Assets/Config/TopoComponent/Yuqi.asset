@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Yuqi
   m_EditorClassIdentifier: Assembly-CSharp::TopoComponent
   typeId: 9
-  prefab: {fileID: 8669203963757930101, guid: 1f463c4bb3a851344bb8a2bb63d2b5b3, type: 3}
+  prefab: {fileID: 8669203963757930101, guid: aff60601dce03ea47a192d57002fef92, type: 3}
   considerRotation: 1
   rotationSimilarList: []

@@ -16,4 +16,6 @@ MonoBehaviour:
   prefab: {fileID: 8669203963757930101, guid: 44a4d61210f2e8242bf3a11ccf94c225, type: 3}
   considerRotation: 1
   rotationSimilarList:
+  - 90
   - 180
+  - 270

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6df77cd93df5dd34381a0feb123e650f, type: 3}
+  m_Name: 3001
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterConfigData
+  id: 3001
+  prefab: {fileID: 2156231962596082936, guid: a5106aea12da52143ba6d7a6cf497083, type: 3}
+  maxHp: 100
+  moveSpeed: 1
+  detectionRange: 8
+  approachDistance: 3
+  detectionFillRatePerSecond: 20
+  detectionMaxValue: 100
+  colorId: 1
+  sameTypeThreshold: 0.38
+  monsterTopoConfig: 1@6-2@0.493^0.6655-3@1-4@270-5@90^180^270;1@6-2@0.5715^0.6255-3@1-4@90-5@90^180^270;1@6-2@0.5785^0.5345-3@1-4@90-5@90^180^270;1@6-2@0.49^0.5725-3@1-4@90-5@90^180^270;1@6-2@0.4895^0.4855-3@1-4@180-5@90^180^270;1@1-2@0.481^0.4-3@1-4@235.5-5@180;1@1-2@0.384^0.402-3@1-4@212.7-5@180;1@9-2@0.5205^0.754-3@1-4@42.01;1@9-2@0.5605^0.434-3@1-4@283|1@8-2@0.495^0.6495-3@1-4@282.8-5@90^180^270;1@8-2@0.586^0.6095-3@1-4@97.2-5@90^180^270;1@8-2@0.5785^0.5345-3@1-4@100.5-5@90^180^270;1@8-2@0.49^0.5725-3@1-4@98.7-5@90^180^270;1@8-2@0.4895^0.4945-3@1-4@103.09-5@90^180^270;1@1-2@0.481^0.4-3@1-4@235.5-5@180;1@1-2@0.384^0.402-3@1-4@212.7-5@180;1@9-2@0.5205^0.754-3@1-4@42.01;1@9-2@0.5605^0.434-3@1-4@283
+  dropComposable: {fileID: 11400000, guid: 6d4b9cabec7a0a24b803d3e994bf462d, type: 2}
