@@ -17,3 +17,4 @@ MonoBehaviour:
   description: 
   prefab: {fileID: 347106374108705673, guid: 4dff5202e5e9155449ed0d7b0412f307, type: 3}
   topoComponent: {fileID: 11400000, guid: b1d301f04f8c70b45a17cd6b7d834b4d, type: 2}
+  itemTypeId: 1

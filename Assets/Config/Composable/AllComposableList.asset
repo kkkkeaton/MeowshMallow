@@ -14,3 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AllComposableList
   composables:
   - {fileID: 11400000, guid: e9f0936765cf0914f9cc70053488757c, type: 2}
+  - {fileID: 11400000, guid: bcac8321ad6c1804c925831bd512c6a6, type: 2}
+  - {fileID: 11400000, guid: 92f9b07afdc830d4ab51b055a3c2a2a1, type: 2}
+  - {fileID: 11400000, guid: 6d4b9cabec7a0a24b803d3e994bf462d, type: 2}
+  - {fileID: 11400000, guid: e5c1794e4ffe5c44ba1a499e8ed25010, type: 2}
+  - {fileID: 11400000, guid: 9125044025721c24cacd7d9dd9c17682, type: 2}
+  - {fileID: 11400000, guid: c3ea1990916937f48868971b43857b7b, type: 2}
+  - {fileID: 11400000, guid: 8ddaa02f9c28bca46a3f402429cac963, type: 2}
+  - {fileID: 11400000, guid: 303b08f9e21fb7246af7f9eb3af82e21, type: 2}
+  - {fileID: 11400000, guid: 4a648e7db957de344a9b8e75b0568898, type: 2}
