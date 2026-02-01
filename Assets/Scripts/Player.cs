@@ -30,6 +30,8 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     {
         if (God.Instance != null)
             God.Instance.Add(this);
+        //通知ComposableManager玩家创建完成
+        God.Instance?.Get<ComposableManager>()?.OnPlayerCreated();
     }
 
     public void Start()

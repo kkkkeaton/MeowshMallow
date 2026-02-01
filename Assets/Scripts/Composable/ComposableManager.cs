@@ -28,7 +28,8 @@ public class ComposableManager : MonoBehaviour
 
     private void Start()
     {
-        SubscribeToPlayerEvents();
+        if (player == null)
+            player = God.Instance?.Get<Player>() ?? God.Instance?.Player?.GetComponent<Player>() ?? FindFirstObjectByType<Player>();
     }
 
     private void OnDestroy()
@@ -38,8 +39,15 @@ public class ComposableManager : MonoBehaviour
 
     private void SubscribeToPlayerEvents()
     {
+        if (player == null)
+            player = God.Instance?.Get<Player>() ?? God.Instance?.Player?.GetComponent<Player>() ?? FindFirstObjectByType<Player>();
         if (player != null)
             player.OnDisguiseChanged += OnPlayerDisguiseChanged;
+    }
+
+    public void OnPlayerCreated()
+    {
+        SubscribeToPlayerEvents();
     }
 
     private void UnsubscribeFromPlayerEvents()
