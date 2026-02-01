@@ -93,6 +93,9 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 parentRect, eventData.position, _eventCamera, out Vector2 localInParent))
         {
+            if (CameraController.Instance != null)
+                CameraController.Instance.SetDragZoom(true);
+
             GameObject clone = Instantiate(gameObject, parent);
             clone.name = gameObject.name + "(Clone)";
             clone.transform.SetAsLastSibling();
@@ -197,5 +200,8 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             Destroy(_dragClone.gameObject);
             _dragClone = null;
         }
+
+        if (CameraController.Instance != null)
+            CameraController.Instance.SetDragZoom(false);
     }
 }
