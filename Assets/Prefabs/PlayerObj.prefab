@@ -255,42 +255,25 @@ MonoBehaviour:
   normalizeMovement: 1
   acceleration: 20
   deceleration: 25
+  waterSourceTag: WaterSource
   moveSpeedCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.3
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.15
-      value: 1
-      inSlope: 1.1679133
-      outSlope: 1.1679133
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.6984127
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.4976257
-      value: 0.7387543
-      inSlope: -1.4751465
-      outSlope: -1.4751465
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.35617667
-      outWeight: 0.22448999
-    - serializedVersion: 3
       time: 1
-      value: 0.3
+      value: 1
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -350,6 +333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   playerMaskCoreString: 
+  playerConfig: {fileID: 11400000, guid: 252c6d8a0e57b9d428c3e3e04d782c1a, type: 2}
+  mainPartRenderer: {fileID: 6123287721788936571}
   ComposableParent: {fileID: 8847224528889694143}
 --- !u!61 &3061122187431153434
 BoxCollider2D:
@@ -385,7 +370,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.000000037252903, y: -0.0016680062}
+  m_Offset: {x: -0.004030198, y: 0.054754127}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -395,5 +380,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.2661577, y: 0.14273873}
+  m_Size: {x: 0.51602715, y: 0.29749665}
   m_EdgeRadius: 0

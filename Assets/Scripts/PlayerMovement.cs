@@ -32,6 +32,10 @@ namespace MeowshMallow
         [Tooltip("与敌人在此距离内按下 Attack 可暗杀（取自 GlobalSetting.ATTACK_RANGE）")]
         private float _assassinationRange => GlobalSetting.ATTACK_RANGE;
 
+        [Header("水源")]
+        [Tooltip("水源区域的碰撞体 Tag，进入后按交互键可将玩家颜色改为 2")]
+        [SerializeField] private string waterSourceTag = "WaterSource";
+
         [SerializeField] private AnimationCurve moveSpeedCurve;
 
         [SerializeField] private float moveCurveOneTime = 1f;
@@ -45,6 +49,7 @@ namespace MeowshMallow
         private PlayerRangeDetector _rangeDetector;
         private Vector2 _moveInput;
         private Vector2 _currentVelocity;
+        private int _waterSourceTriggerCount;
 
         private void Awake()
         {
@@ -121,10 +126,34 @@ namespace MeowshMallow
 
         private void OnInteractPerformed(InputAction.CallbackContext context)
         {
+            if (_waterSourceTriggerCount > 0)
+            {
+                var player = GetComponent<Player>();
+                if (player != null)
+                {
+                    player.ChangeColor(2);
+                    return;
+                }
+            }
             if (_rangeDetector == null) return;
             PickableItem closest = _rangeDetector.GetClosestPickableInRange();
             if (closest != null)
                 closest.DoPickup();
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!string.IsNullOrEmpty(waterSourceTag) && other.CompareTag(waterSourceTag)){
+                _waterSourceTriggerCount++;
+                Debug.Log($"[PlayerMovement] 进入水源区域，当前水源触发计数: {_waterSourceTriggerCount}");
+            }
+                
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (!string.IsNullOrEmpty(waterSourceTag) && other.CompareTag(waterSourceTag))
+                _waterSourceTriggerCount--;
         }
 
         private void OnMovePerformed(InputAction.CallbackContext context)

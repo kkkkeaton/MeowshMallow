@@ -9,6 +9,9 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     /// <summary>玩家当前颜色 ID，初始为 1。</summary>
     private int _colorId = 1;
 
+    public PlayerConfig playerConfig;
+    public SpriteRenderer mainPartRenderer;
+
     public Transform ComposableParent;
 
     public virtual MaskCore GetMaskInfo()
@@ -26,6 +29,7 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     {
         playerMaskCore.Parse(playerMaskCoreString);
         _colorId = 1;
+        ApplyColorSprite();
     }
 
     /// <summary>获取当前颜色 ID。</summary>
@@ -34,7 +38,18 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     /// <summary>切换玩家颜色。</summary>
     public void ChangeColor(int colorId)
     {
+        Debug.Log($"[Player] 切换玩家颜色为: {colorId}");
         _colorId = colorId;
+        ApplyColorSprite();
+    }
+
+    /// <summary>根据当前颜色 ID 从 PlayerConfig 取 Sprite 并应用到 MainPart。</summary>
+    private void ApplyColorSprite()
+    {
+        if (playerConfig == null || mainPartRenderer == null) return;
+        var sprite = playerConfig.GetSpriteForColor(_colorId);
+        if (sprite != null)
+            mainPartRenderer.sprite = sprite;
     }
 
 
