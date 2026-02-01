@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 4
   name: linpian
   description: 
-  prefab: {fileID: 347106374108705673, guid: fa8b463485866ef49a1f9d2f166dc889, type: 3}
+  prefab: {fileID: 347106374108705673, guid: 3b694e8eb404c7f47b5bad5cfa1b69ae, type: 3}
   topoComponent: {fileID: 11400000, guid: 7fdc93ea1945579488399660209b6530, type: 2}
   itemTypeId: 2
