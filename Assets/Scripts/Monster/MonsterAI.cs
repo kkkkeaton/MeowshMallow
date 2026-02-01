@@ -79,9 +79,15 @@ public class MonsterAI : MonoBehaviour
         // Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配度: {similarity}");
         // return similarity >= _sameTypeThreshold;
 
-        var similarity = God.Instance.Get<MonsterManager>().CheckIsSameKind(_monster, _playerMaskInfoProvider, _sameTypeThreshold);
-        Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配度: {similarity}");
-        return similarity;
+        var similarity_topo = God.Instance.Get<MonsterManager>().CheckIsSameKind(_monster, _playerMaskInfoProvider, _sameTypeThreshold);
+
+        var playerColorId = _player != null ? (_player.GetComponent<Player>()?.GetColorId() ?? 1) : 1;
+        var monsterColorId = _monster.GetColorId();
+        var similarity_color = (playerColorId == monsterColorId);
+
+        bool isSameType = similarity_topo && similarity_color;
+        if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家与怪物拓扑匹配: {similarity_topo}, 颜色相同: {similarity_color}, 视作同类: {isSameType}");
+        return isSameType;
     }
 
     /// <summary>运行时注入配置（如由 MonsterManager 生成后调用），便于预制体不绑定 config。</summary>

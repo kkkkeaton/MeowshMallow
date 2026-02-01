@@ -75,6 +75,13 @@ public class MonsterConfig : ScriptableObject
         return _cache != null && _cache.TryGetValue(id, out var e) ? e.DetectionMaxValue : 100f;
     }
 
+    /// <summary>根据怪物 ID 获取颜色 ID，未找到返回 1。</summary>
+    public int GetColorId(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.ColorId : 1;
+    }
+
     /// <summary>根据怪物 ID 获取将玩家视作同类的最低阈值（0～1），未找到返回 0。</summary>
     public float GetSameTypeThreshold(string id)
     {

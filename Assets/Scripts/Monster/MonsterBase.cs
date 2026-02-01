@@ -7,6 +7,7 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
     private string monsterId;
     private float maxHp;
     private float moveSpeed;
+    private int _colorId;
 
     private MaskCore _maskCore; 
 
@@ -19,17 +20,21 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
     public string GetId() => monsterId;
     public bool IsAlive() => alive;
 
-    /// <summary>由工厂在生成后调用，注入配置中的 id、maxHp、moveSpeed。</summary>
-    public void Init(string id, float hp, float speed, string topo)
+    /// <summary>由工厂在生成后调用，注入配置中的 id、maxHp、moveSpeed、颜色。</summary>
+    public void Init(string id, float hp, float speed, string topo, int colorId = 1)
     {
         monsterId = id;
         maxHp = hp;
         moveSpeed = speed;
+        _colorId = colorId;
         currentHp = maxHp;
         _maskCore = new MaskCore();
         _maskCore.Parse(topo);
         alive = true;
     }
+
+    /// <summary>怪物颜色 ID（来自配置）。</summary>
+    public int GetColorId() => _colorId;
 
     public void TakeDamage(float damage)
     {

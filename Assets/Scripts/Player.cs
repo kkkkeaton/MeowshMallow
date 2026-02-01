@@ -1,10 +1,13 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour,IMaskInfoProvider
+public class Player : MonoBehaviour, IMaskInfoProvider
 {
     MaskCore playerMaskCore = new MaskCore();
 
     [SerializeField] string playerMaskCoreString = "1@1-2@0.662^0.679-3@1-4@229.639-5@180;1@1-2@0.833^0.742-3@1-4@162.48-5@180;1@1-2@0.894^0.751-3@1-4@210.739-5@180;1@2-2@0.77^0.602-3@1-4@111.049-5@180;1@2-2@0.607^0.663-3@1-4@155.775-5@180;1@1-2@0.456^0.409-3@0-4@0;1@2-2@0.847^0.461-3@0-4@0;1@2-2@0.605^0.105-3@0-4@0";
+
+    /// <summary>玩家当前颜色 ID，初始为 1。</summary>
+    private int _colorId = 1;
 
     public Transform ComposableParent;
 
@@ -22,6 +25,16 @@ public class Player : MonoBehaviour,IMaskInfoProvider
     public void Start()
     {
         playerMaskCore.Parse(playerMaskCoreString);
+        _colorId = 1;
+    }
+
+    /// <summary>获取当前颜色 ID。</summary>
+    public int GetColorId() => _colorId;
+
+    /// <summary>切换玩家颜色。</summary>
+    public void ChangeColor(int colorId)
+    {
+        _colorId = colorId;
     }
 
 

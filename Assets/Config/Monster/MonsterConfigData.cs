@@ -33,6 +33,10 @@ public class MonsterConfigData : ScriptableObject
     [Tooltip("识破值满值，达到后会增加玩家在该类型怪物中的暴露值")]
     [SerializeField] private float detectionMaxValue = 100f;
 
+    [Header("颜色")]
+    [Tooltip("怪物颜色 ID，与玩家颜色相同时可参与同类判定")]
+    [SerializeField] private int colorId = 1;
+
     [Header("同类判定")]
     [Tooltip("怪物将玩家视作同类的最低阈值，0～1。玩家与怪物拓扑匹配度 >= 此值时视为同类")]
     [Range(0f, 1f)]
@@ -69,6 +73,9 @@ public class MonsterConfigData : ScriptableObject
 
     /// <summary>识破值满值。</summary>
     public float DetectionMaxValue => detectionMaxValue;
+
+    /// <summary>怪物颜色 ID。</summary>
+    public int ColorId => colorId;
 
     /// <summary>将玩家视作同类的最低阈值，0～1。</summary>
     public float SameTypeThreshold => sameTypeThreshold;
