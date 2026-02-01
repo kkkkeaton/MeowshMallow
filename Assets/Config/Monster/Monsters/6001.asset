@@ -18,7 +18,7 @@ MonoBehaviour:
   moveSpeed: 1
   detectionRange: 8
   approachDistance: 3
-  detectionFillRatePerSecond: 20
+  detectionFillRatePerSecond: 60
   detectionMaxValue: 100
   colorId: 1
   sameTypeThreshold: 0.38
