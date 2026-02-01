@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 /// <summary>玩家暴露相关状态：正常、被识破、伪装成功（免疫增加中）。</summary>
 public enum PlayerExposureState
@@ -58,6 +59,12 @@ public class GameProcessManager : MonoBehaviour
 
     /// <summary>伪装免疫剩余时间（秒），仅在 DisguiseImmunity 状态下递减。</summary>
     private float _disguiseImmunityRemaining;
+
+    /// <summary>当「正在识破玩家的怪物」列表从有变为无时，减少的暴露值。</summary>
+    private float _allMonstersLostTrackExposureDecrease;
+
+    /// <summary>当前正在识破玩家的怪物（在观测范围内且处于 Approaching/Observing）。列表从有变为无时视为玩家骗过所有怪物，减少暴露值。</summary>
+    private readonly HashSet<IMonster> _monstersSpottingPlayer = new HashSet<IMonster>();
 
     // ---------- 其它运行时状态 ----------
 
@@ -120,6 +127,7 @@ public class GameProcessManager : MonoBehaviour
             _spottedGrowthPerSecond = _config.SpottedGrowthPerSecond;
             _disguiseSuccessExposureDecrease = _config.DisguiseSuccessExposureDecrease;
             _disguiseSuccessImmunityDuration = _config.DisguiseSuccessImmunityDuration;
+            _allMonstersLostTrackExposureDecrease = _config.AllMonstersLostTrackExposureDecrease;
             _exposureGrowthPerSecond = _normalGrowthPerSecond;
             _playerState = PlayerExposureState.Normal;
             _playerPrefab = _config.PlayerPrefab;
@@ -133,6 +141,7 @@ public class GameProcessManager : MonoBehaviour
             _spottedGrowthPerSecond = 6f;
             _disguiseSuccessExposureDecrease = 20f;
             _disguiseSuccessImmunityDuration = 5f;
+            _allMonstersLostTrackExposureDecrease = 15f;
             _exposureGrowthPerSecond = _normalGrowthPerSecond;
             _playerState = PlayerExposureState.Normal;
             _playerPrefab = null;
@@ -304,6 +313,28 @@ public class GameProcessManager : MonoBehaviour
 
     /// <summary>伪装免疫剩余时间（秒），非免疫状态返回 0。</summary>
     public float GetDisguiseImmunityRemaining() => _playerState == PlayerExposureState.DisguiseImmunity ? _disguiseImmunityRemaining : 0f;
+
+    // ---------- 正在识破玩家的怪物列表 ----------
+
+    /// <summary>怪物开始识破玩家（进入追踪或观察）时由 MonsterAI 调用。</summary>
+    public void RegisterSpotting(IMonster monster)
+    {
+        if (monster == null) return;
+        _monstersSpottingPlayer.Add(monster);
+    }
+
+    /// <summary>怪物不再识破玩家（玩家离开观测范围或怪物死亡）时由 MonsterAI / MonsterManager 调用。若列表从有变为无，视为玩家骗过所有怪物，减少暴露值。</summary>
+    public void UnregisterSpotting(IMonster monster)
+    {
+        if (monster == null) return;
+        int countBefore = _monstersSpottingPlayer.Count;
+        _monstersSpottingPlayer.Remove(monster);
+        if (countBefore > 0 && _monstersSpottingPlayer.Count == 0)
+            SubtractExposure(_allMonstersLostTrackExposureDecrease);
+    }
+
+    /// <summary>当前正在识破玩家的怪物数量（只读）。</summary>
+    public int MonstersSpottingPlayerCount => _monstersSpottingPlayer.Count;
 
     // ---------- 暴露值：增速（公开，支持负值=逐渐减少） ----------
 

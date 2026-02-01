@@ -154,6 +154,7 @@ public class MonsterAI : MonoBehaviour
 
         if (isSameType)
         {
+            God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
             _state = State.Idle;
             emojiConfused.SetActive(false);
             return;
@@ -165,6 +166,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer <= _detectionRange)
                 {
                     _state = State.Approaching;
+                    God.Instance?.Get<GameProcessManager>()?.RegisterSpotting(_monster);
                     PlayDiscoverShake();
                     FlashSuspect();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 进入索敌，开始接近玩家 (距离={distToPlayer:F1})");
@@ -176,6 +178,7 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Disengaged;
                     _currentDetectionValue = 0f;
+                    God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -197,6 +200,7 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Disengaged;
                     _currentDetectionValue = 0f;
+                    God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -209,6 +213,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer <= _detectionRange)
                 {
                     _state = State.Approaching;
+                    God.Instance?.Get<GameProcessManager>()?.RegisterSpotting(_monster);
                     PlayDiscoverShake();
                     FlashSuspect();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家再次进入探测范围，重新开始跟随 (距离={distToPlayer:F1})");

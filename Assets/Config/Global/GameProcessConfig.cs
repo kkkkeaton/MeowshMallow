@@ -28,6 +28,9 @@ public class GameProcessConfig : ScriptableObject
     [Tooltip("伪装成功后多少秒内不再增加暴露值")]
     [SerializeField] private float disguiseSuccessImmunityDuration = 5f;
 
+    [Tooltip("当「正在识破玩家的怪物」列表从有变为无时（玩家骗过所有怪物），减少的暴露值")]
+    [SerializeField] private float allMonstersLostTrackExposureDecrease = 15f;
+
     [Header("玩家")]
     [Tooltip("游戏开始时实例化的玩家预制体")]
     [SerializeField] private GameObject playerPrefab;
@@ -56,6 +59,9 @@ public class GameProcessConfig : ScriptableObject
 
     /// <summary>伪装成功后免疫增加暴露值的时长（秒）。</summary>
     public float DisguiseSuccessImmunityDuration => disguiseSuccessImmunityDuration;
+
+    /// <summary>当正在识破玩家的怪物列表从有变为无时，减少的暴露值。</summary>
+    public float AllMonstersLostTrackExposureDecrease => allMonstersLostTrackExposureDecrease;
 
     /// <summary>游戏开始时实例化的玩家预制体。</summary>
     public GameObject PlayerPrefab => playerPrefab;

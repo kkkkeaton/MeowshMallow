@@ -31,13 +31,14 @@ public class MonsterManager : MonoBehaviour
         return monster;
     }
 
-    /// <summary>怪物死亡时由 OnDeath 触发：取消订阅并从存活列表中移除。</summary>
+    /// <summary>怪物死亡时由 OnDeath 触发：取消订阅并从存活列表中移除；若该怪正在识破玩家，从识破列表移除（可能触发「骗过所有怪物」减暴露值）。</summary>
     private void OnMonsterDeath(IMonster monster)
     {
         if (monster is MonsterBase mb)
         {
             mb.OnDeath -= OnMonsterDeath;
             aliveMonsters.Remove(mb);
+            God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(mb);
         }
     }
 
