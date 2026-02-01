@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations;
@@ -32,6 +33,11 @@ namespace MeowshMallow
         [Tooltip("与敌人在此距离内按下 Attack 可暗杀（取自 GlobalSetting.ATTACK_RANGE）")]
         private float _assassinationRange => GlobalSetting.ATTACK_RANGE;
 
+        [Header("动画")]
+        [Tooltip("Animator 状态名：idle（移动/待机时）、kill（暗杀时）")]
+        [SerializeField] private string animIdleState = "Anim_obj_idle";
+        [SerializeField] private string animKillState = "Anim_obj_kill";
+
         [Header("水源")]
         [Tooltip("水源区域的碰撞体 Tag，进入后按交互键可将玩家颜色改为 2")]
         [SerializeField] private string waterSourceTag = "WaterSource";
@@ -52,6 +58,7 @@ namespace MeowshMallow
         private float moveCurveTimeNow = 0f;
 
         private Rigidbody2D _rb;
+        private Animator _animator;
         private InputAction _moveAction;
         private InputAction _interactAction;
         private InputAction _attackAction;
@@ -65,6 +72,7 @@ namespace MeowshMallow
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _animator = transform.Find("PartShow").GetComponent<Animator>();
             _rangeDetector = GetComponent<PlayerRangeDetector>();
 
             if (playerInputActions == null)
@@ -132,7 +140,28 @@ namespace MeowshMallow
             if (_monsterManager == null && God.Instance != null)
                 _monsterManager = God.Instance.Get<MonsterManager>();
             if (_monsterManager != null)
+            {
+                PlayKillAnimation();
                 _monsterManager.Assassinate(closest);
+            }
+        }
+
+        /// <summary>播放暗杀动画，播完后切回 idle。</summary>
+        private void PlayKillAnimation()
+        {
+            if (_animator == null) return;
+            StopAllCoroutines();
+            StartCoroutine(PlayKillAndReturnToIdle());
+        }
+
+        private IEnumerator PlayKillAndReturnToIdle()
+        {
+            _animator.Play(animKillState, 0, 0f);
+            yield return null;
+            var info = _animator.GetCurrentAnimatorStateInfo(0);
+            yield return new WaitForSeconds(info.length);
+            if (_animator != null)
+                _animator.Play(animIdleState, 0, 0f);
         }
 
         private void OnInteractPerformed(InputAction.CallbackContext context)
