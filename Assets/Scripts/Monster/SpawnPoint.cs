@@ -88,6 +88,7 @@ public class SpawnPoint : MonoBehaviour
         center.z = 0f;
         Gizmos.color = new Color(1f, 1f, 0f, 0.35f);
         Gizmos.DrawWireSphere(center, detectionRange);
+        UnityEditor.Handles.Label(center + Vector3.up * (detectionRange + 1.5f), $"ID: {monsterId}");
         UnityEditor.Handles.Label(center + Vector3.up * (detectionRange + 0.5f), $"探测 {detectionRange:F0}");
         Gizmos.color = new Color(0f, 1f, 1f, 0.4f);
         Gizmos.DrawWireSphere(center, spawnRange);
