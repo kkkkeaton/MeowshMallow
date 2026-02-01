@@ -86,6 +86,9 @@ public class GameProcessManager : MonoBehaviour
     /// <summary>当前局实例化的玩家物体，StartGame 时创建，可供其他脚本通过 Player 获取。</summary>
     private GameObject _playerInstance;
 
+    /// <summary>当前局实例化的地图物体，StartGame 时创建，重新开始时销毁。</summary>
+    private GameObject _mapInstance;
+
     // ---------- 事件（供 UI、音效等订阅） ----------
 
     /// <summary>玩法开始时触发。</summary>
@@ -205,6 +208,8 @@ public class GameProcessManager : MonoBehaviour
     public void StartGame()
     {
         Debug.Log("StartGame");
+        Time.timeScale = 1f;
+
         if (_isEnded || _isPlaying)
             ResetGame();
 
@@ -214,6 +219,20 @@ public class GameProcessManager : MonoBehaviour
         _exposureGrowthPerSecond = _normalGrowthPerSecond;
         _disguiseImmunityRemaining = 0f;
         ResetExposure();
+
+        God.Instance?.Get<Backpack>()?.Clear();
+
+        God.Instance?.Get<ComposableManager>()?.ClearAllPlayerComposable();
+
+        var monsterManager = God.Instance?.Get<MonsterManager>();
+        if (monsterManager != null)
+            monsterManager.ClearAllMonsters();
+
+        if (_mapInstance != null)
+        {
+            Destroy(_mapInstance);
+            _mapInstance = null;
+        }
 
         if (_playerPrefab != null)
         {
@@ -232,8 +251,8 @@ public class GameProcessManager : MonoBehaviour
 
         if (_config != null && _config.MapPrefab != null)
         {
-            var mapInstance = Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
-            SetCameraConfinerFromMap(mapInstance);
+            _mapInstance = Instantiate(_config.MapPrefab, Vector3.zero, Quaternion.identity);
+            SetCameraConfinerFromMap(_mapInstance);
         }
 
         PlayNormalBgm();

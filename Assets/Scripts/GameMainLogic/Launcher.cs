@@ -18,8 +18,5 @@ public class Launcher : MonoBehaviour
 
     private void Start()
     {
-        var gameProcess = God.Instance?.Get<GameProcessManager>();
-        if (gameProcess != null)
-            gameProcess.StartGame();
     }
 }

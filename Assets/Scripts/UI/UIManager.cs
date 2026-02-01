@@ -79,6 +79,8 @@ public class UIManager : MonoBehaviour
         SetPickableHintVisible(false);
         SetAssassinationHintVisible(false);
         SetRotateHintVisible(false);
+
+        Time.timeScale = 0f;
     }
 
     private void Start()
@@ -106,12 +108,14 @@ public class UIManager : MonoBehaviour
 
     private void OnGameVictory()
     {
+        Time.timeScale = 0f;
         if (_victoryUIInstance != null)
             _victoryUIInstance.SetActive(true);
     }
 
     private void OnGameOver()
     {
+        Time.timeScale = 0f;
         if (_failureUIInstance != null)
             _failureUIInstance.SetActive(true);
     }
@@ -143,6 +147,7 @@ public class UIManager : MonoBehaviour
 
     private void OnBackHomeButtonClicked()
     {
+        Time.timeScale = 0f;
         if (_victoryUIInstance != null)
             _victoryUIInstance.SetActive(false);
         if (_failureUIInstance != null)

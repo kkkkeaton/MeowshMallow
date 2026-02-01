@@ -72,4 +72,19 @@ public class Backpack : MonoBehaviour
 
         return false;
     }
+
+    /// <summary>清空背包：移除所有格子中的 PartItem 并清空已添加 id 记录。游戏重新开始时由 GameProcessManager 调用。</summary>
+    public void Clear()
+    {
+        _addedIds.Clear();
+        Transform grid = _grid != null ? _grid : transform.Find("grid");
+        if (grid == null) return;
+        for (int i = 0; i < grid.childCount; i++)
+        {
+            Transform slot = grid.GetChild(i);
+            if (slot.childCount == 0) continue;
+            for (int j = slot.childCount - 1; j >= 0; j--)
+                Destroy(slot.GetChild(j).gameObject);
+        }
+    }
 }

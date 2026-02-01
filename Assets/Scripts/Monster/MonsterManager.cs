@@ -77,6 +77,19 @@ public class MonsterManager : MonoBehaviour
     /// <summary>返回当前存活怪物列表的只读视图。</summary>
     public IReadOnlyList<MonsterBase> GetAliveMonsters() => aliveMonsters;
 
+    /// <summary>清空本局所有存活怪物及本管理器下生成的掉落物（销毁物体并从列表移除）。游戏重新开始时由 GameProcessManager 调用。</summary>
+    public void ClearAllMonsters()
+    {
+        foreach (var m in aliveMonsters)
+        {
+            if (m != null)
+                m.OnDeath -= OnMonsterDeath;
+        }
+        aliveMonsters.Clear();
+        for (int i = transform.childCount - 1; i >= 0; i--)
+            Destroy(transform.GetChild(i).gameObject);
+    }
+
     public bool CheckIsSameKind<T1, T2>(T1 judger, T2 beJudged, float threshold) where T1 : IMaskInfoJudger where T2 : IMaskInfoProvider
     {
         if (judger == null || beJudged == null) return false;
