@@ -39,7 +39,7 @@ public class PlayerRangeDetector : MonoBehaviour
         {
             var closestPickable = GetClosestPickableInRange();
             showE = closestPickable != null;
-            eText = showE ? (closestPickable.Composable != null ? closestPickable.Composable.name : "拾取") : null;
+            eText = showE ? ("拾取") : null;
         }
         _uiManager.SetPickableHintVisible(showE, eText);
 
