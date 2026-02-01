@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc224202678c986438c9aa79a915bbf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterBase
+  animIdleState: anim_1002_idle
+  animKillState: anim_1002_kill
 --- !u!114 &8265951336798460210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,11 +69,10 @@ MonoBehaviour:
   discoverShakeStrength: 0.08
   _suspect: {fileID: 2608418831028253105}
   _bark: {fileID: 7668077938021087617}
-  _flashDuration: 1.5
-  _flashTweenDuration: 0.3
-  _flashStartOffsetY: -0.3
-  _flashEndOffsetY: 0.5
-  _flashStartScale: 0.3
+  _symbolInState: ani_suspect_in
+  _symbolLoopState: ani_suspect_loop
+  _barkInState: ani_bark_in
+  _barkLoopState: ani_bark_loop
   debugLog: 0
   emojiConfused: {fileID: 2608418831028253105}
 --- !u!61 &1805029997204081089
@@ -130,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5101679708250409188}
   - component: {fileID: 228605865725144959}
+  - component: {fileID: 6861932579630611294}
   m_Layer: 0
   m_Name: suspect
   m_TagString: Untagged
@@ -211,6 +213,28 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!95 &6861932579630611294
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2608418831028253105}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 96c9a6be234f4b348a1e1589cc2d2054, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7668077938021087617
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8577195663527845231}
   - component: {fileID: 3218072524769020492}
+  - component: {fileID: 4812359170444034538}
   m_Layer: 0
   m_Name: bark
   m_TagString: Untagged
@@ -302,6 +327,28 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!95 &4812359170444034538
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7668077938021087617}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c3880cc4c0e2a1b4c8ab3314ebedc42e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &9087865433798632259
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,6 +360,7 @@ GameObject:
   - component: {fileID: 4134281518358376912}
   - component: {fileID: 9045831031354712044}
   - component: {fileID: 3232088607927841548}
+  - component: {fileID: 2517618803051563667}
   m_Layer: 0
   m_Name: MonsterBasePrefab
   m_TagString: Untagged
@@ -407,3 +455,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::YSort
   yOffset: 0
+--- !u!95 &2517618803051563667
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087865433798632259}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0b7ef38642130c0409b8752d5fd83fcc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

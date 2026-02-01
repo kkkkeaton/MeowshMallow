@@ -24,20 +24,15 @@ public class MonsterAI : MonoBehaviour
     [SerializeField] private float discoverShakeStrength = 2f;
 
     [Header("状态表现（子物体 suspect / bark）")]
-    [Tooltip("警觉状态表现：进入追踪或观察时闪一下；不填则用子物体名 suspect")]
+    [Tooltip("警觉状态表现：追踪/观察时一直显示；不填则用子物体名 suspect")]
     [SerializeField] private GameObject _suspect;
-    [Tooltip("发现状态表现：识破值满时闪一下；不填则用子物体名 bark")]
+    [Tooltip("发现状态表现：识破值满时一直显示；不填则用子物体名 bark")]
     [SerializeField] private GameObject _bark;
-    [Tooltip("问号/叹号总显示时长（秒）")]
-    [SerializeField] private float _flashDuration = 1.5f;
-    [Tooltip("DOTween 上移+放大动画时长（秒）")]
-    [SerializeField] private float _flashTweenDuration = 0.3f;
-    [Tooltip("动画：起始相对高度（本地 Y，负=在默认下方）")]
-    [SerializeField] private float _flashStartOffsetY = -0.3f;
-    [Tooltip("动画：结束相对高度（本地 Y，正=在默认上方）")]
-    [SerializeField] private float _flashEndOffsetY = 0.5f;
-    [Tooltip("动画：起始缩放倍数（相对预制体默认 scale）")]
-    [SerializeField] private float _flashStartScale = 0.3f;
+    [Tooltip("符号 Animator 状态名：in（出现时播放）、loop（之后循环）")]
+    [SerializeField] private string _symbolInState = "ani_suspect_in";
+    [SerializeField] private string _symbolLoopState = "ani_suspect_loop";
+    [SerializeField] private string _barkInState = "ani_bark_in";
+    [SerializeField] private string _barkLoopState = "ani_bark_loop";
 
     [Header("调试")]
     [Tooltip("勾选后状态切换时在 Console 输出，便于验证索敌与移动")]
@@ -61,6 +56,11 @@ public class MonsterAI : MonoBehaviour
     private AudioClip _discoverSfx;
     private AudioClip _spottedSfx;
 
+    private Animator _suspectAnimator;
+    private Animator _barkAnimator;
+    private Coroutine _suspectCoroutine;
+    private Coroutine _barkCoroutine;
+
     /// <summary>当前识破值（0 ~ 满值）；满后不立刻清零，等死亡或丢失视野后清零。</summary>
     private float _currentDetectionValue;
 
@@ -77,8 +77,16 @@ public class MonsterAI : MonoBehaviour
         if (_monster == null) return;
         if (_suspect == null) _suspect = transform.Find("suspect")?.gameObject;
         if (_bark == null) _bark = transform.Find("bark")?.gameObject;
-        if (_suspect != null) _suspect.SetActive(false);
-        if (_bark != null) _bark.SetActive(false);
+        if (_suspect != null)
+        {
+            _suspectAnimator = _suspect.GetComponent<Animator>();
+            _suspect.SetActive(false);
+        }
+        if (_bark != null)
+        {
+            _barkAnimator = _bark.GetComponent<Animator>();
+            _bark.SetActive(false);
+        }
         ApplyConfig();
     }
 
@@ -171,6 +179,8 @@ public class MonsterAI : MonoBehaviour
             _currentDetectionValue = 0f;
             _hasTriggeredDetectionFull = false;
             emojiConfused.SetActive(false);
+            HideSuspect();
+            HideBark();
             return;
         }
 
@@ -195,6 +205,8 @@ public class MonsterAI : MonoBehaviour
                     _currentDetectionValue = 0f;
                     _hasTriggeredDetectionFull = false;
                     God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
+                    HideSuspect();
+                    HideBark();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -221,6 +233,8 @@ public class MonsterAI : MonoBehaviour
                     _currentDetectionValue = 0f;
                     _hasTriggeredDetectionFull = false;
                     God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
+                    HideSuspect();
+                    HideBark();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家离开探测范围，停止跟随 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -272,13 +286,14 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值；闪 bark、播识破音效。识破值不立刻清零，等怪物死亡或丢失视野后清零。</summary>
+    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值；隐藏 suspect、显示 bark、播识破音效。识破值不立刻清零，等怪物死亡或丢失视野后清零。</summary>
     private void TryTriggerDetectionFull()
     {
         if (_currentDetectionValue < _detectionMaxValue) return;
         _currentDetectionValue = _detectionMaxValue;
         if (_hasTriggeredDetectionFull) return;
         _hasTriggeredDetectionFull = true;
+        HideSuspect();
         FlashBark();
         PlaySpottedSfx();
         var process = God.Instance?.Get<GameProcessManager>();
@@ -292,44 +307,63 @@ public class MonsterAI : MonoBehaviour
     /// <summary>识破值是否已满（满时玩家不可暗杀此怪）。</summary>
     public bool IsDetectionFull() => _currentDetectionValue >= _detectionMaxValue;
 
-    /// <summary>进入追踪或观察时闪一下 suspect（警觉状态表现）。</summary>
-    private void FlashSuspect()
+    /// <summary>显示 suspect（警觉符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。</summary>
+    private void ShowSuspect()
     {
-        if (_suspect != null) StartCoroutine(FlashRoutine(_suspect));
+        if (_suspect == null) return;
+        if (_suspect.activeSelf) return; // 已显示则不重新播放
+        if (_suspectCoroutine != null) StopCoroutine(_suspectCoroutine);
+        _suspectCoroutine = StartCoroutine(ShowSymbolRoutine(_suspect, _suspectAnimator, _symbolInState, _symbolLoopState));
     }
 
-    /// <summary>识破值满时闪一下 bark（发现状态表现）。</summary>
-    private void FlashBark()
+    /// <summary>隐藏 suspect（警觉符号）。</summary>
+    private void HideSuspect()
     {
-        if (_bark != null) StartCoroutine(FlashRoutine(_bark));
+        if (_suspect == null) return;
+        if (_suspectCoroutine != null)
+        {
+            StopCoroutine(_suspectCoroutine);
+            _suspectCoroutine = null;
+        }
+        _suspect.SetActive(false);
     }
 
-    private IEnumerator FlashRoutine(GameObject obj)
+    /// <summary>显示 bark（发现符号）：播放 in 动画后切到 loop 循环；若已显示则不重新播放。</summary>
+    private void ShowBark()
+    {
+        if (_bark == null) return;
+        if (_bark.activeSelf) return; // 已显示则不重新播放
+        if (_barkCoroutine != null) StopCoroutine(_barkCoroutine);
+        _barkCoroutine = StartCoroutine(ShowSymbolRoutine(_bark, _barkAnimator, _barkInState, _barkLoopState));
+    }
+
+    /// <summary>隐藏 bark（发现符号）。</summary>
+    private void HideBark()
+    {
+        if (_bark == null) return;
+        if (_barkCoroutine != null)
+        {
+            StopCoroutine(_barkCoroutine);
+            _barkCoroutine = null;
+        }
+        _bark.SetActive(false);
+    }
+
+    /// <summary>通用符号显示协程：激活物体，播放 in 动画，播完后切到 loop。</summary>
+    private IEnumerator ShowSymbolRoutine(GameObject obj, Animator animator, string inState, string loopState)
     {
         if (obj == null) yield break;
-        Transform t = obj.transform;
-        Vector3 restLocalPos = t.localPosition;
-        Vector3 restLocalScale = t.localScale;
-
-        t.localPosition = restLocalPos + Vector3.up * _flashStartOffsetY;
-        t.localScale = restLocalScale * _flashStartScale;
         obj.SetActive(true);
-
-        float tweenDur = Mathf.Max(0.01f, _flashTweenDuration);
-        t.DOKill(true);
-        t.DOLocalMove(restLocalPos + Vector3.up * _flashEndOffsetY, tweenDur).SetEase(Ease.OutQuad);
-        t.DOScale(restLocalScale, tweenDur).SetEase(Ease.OutBack);
-
-        yield return new WaitForSeconds(_flashDuration);
-
-        if (obj != null)
+        if (animator != null && !string.IsNullOrEmpty(inState))
         {
-            t.DOKill(true);
-            t.localPosition = restLocalPos;
-            t.localScale = restLocalScale;
-            obj.SetActive(false);
+            animator.Play(inState, 0, 0f);
+            yield return null;
         }
     }
+
+    // 保留旧方法名以兼容现有调用
+    private void FlashSuspect() => ShowSuspect();
+    private void FlashBark() => ShowBark();
 
     private void FacePlayer(Vector2 myPos, Vector2 playerPos)
     {

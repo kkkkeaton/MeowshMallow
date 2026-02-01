@@ -1,9 +1,16 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 /// <summary>2D 怪物实体：挂在与 Prefab 同级的 GameObject 上，实现 IMonster，负责血量、受击、死亡与死亡事件。id/maxHp/moveSpeed 仅由工厂 Init 在生成时注入，预制体上无需配置。</summary>
 public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
 {
+    [Header("动画")]
+    [Tooltip("Animator 状态名：idle（平时）、kill（死亡时）")]
+    [SerializeField] private string animIdleState = "anim_1002_idle";
+    [SerializeField] private string animKillState = "anim_1002_kill";
+
+    private Animator _animator;
     private string monsterId;
     private float maxHp;
     private float moveSpeed;
@@ -19,6 +26,11 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
 
     public string GetId() => monsterId;
     public bool IsAlive() => alive;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     /// <summary>由工厂在生成后调用，注入配置中的 id、maxHp、moveSpeed、颜色。</summary>
     public void Init(string id, float hp, float speed, string topo, int colorId = 1)
@@ -49,6 +61,18 @@ public class MonsterBase : MonoBehaviour, IMonster, IMaskInfoAgent
         if (!alive) return;
         alive = false;
         OnDeath?.Invoke(this);
+        StartCoroutine(PlayDeathAndDestroy());
+    }
+
+    private IEnumerator PlayDeathAndDestroy()
+    {
+        if (_animator != null && !string.IsNullOrEmpty(animKillState))
+        {
+            _animator.Play(animKillState, 0, 0f);
+            yield return null;
+            var info = _animator.GetCurrentAnimatorStateInfo(0);
+            yield return new WaitForSeconds(info.length);
+        }
         Destroy(gameObject);
     }
 
