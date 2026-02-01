@@ -222,11 +222,11 @@ public class GameProcessManager : MonoBehaviour
 
         God.Instance?.Get<Backpack>()?.Clear();
 
-        God.Instance?.Get<ComposableManager>()?.ClearAllPlayerComposable();
+        God.Instance?.Get<ComposableManager>()?.ReStart();
 
         var monsterManager = God.Instance?.Get<MonsterManager>();
         if (monsterManager != null)
-            monsterManager.ClearAllMonsters();
+            monsterManager.ReStart();
 
         if (_mapInstance != null)
         {

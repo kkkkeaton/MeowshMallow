@@ -6,8 +6,8 @@ public static class MaskCoreConfig
     /// <summary>无序整数对 → 浮点值；键为 (较小值, 较大值)，保证 (1,2) 与 (2,1) 同键。</summary>
     public static Dictionary<(int, int), float> PairToFloat { get; } = new Dictionary<(int, int), float>
     {
-        [(1, 2)] = 0.1f,
-        [(1, 3)] = 1f
+        [(1, 2)] = 0f,
+        [(1, 3)] = 0f
     };
 
 
@@ -37,6 +37,12 @@ public static class MaskCoreConfig
         if (a==b)
         {
             value = 1f;
+            return true;
+        }
+        //字典中没有就返回0
+        if (!PairToFloat.TryGetValue(key, out value))
+        {
+            value = 0f;
             return true;
         }
         return PairToFloat.TryGetValue(key, out value);

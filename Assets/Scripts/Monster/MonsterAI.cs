@@ -177,6 +177,7 @@ public class MonsterAI : MonoBehaviour
 
     private void Update()
     {
+        CheckPlayerDisguise();
         if (!_monster.IsAlive() || _player == null || config == null) return;
 
         Vector2 myPos = transform.position;

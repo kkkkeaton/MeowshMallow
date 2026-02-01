@@ -34,12 +34,12 @@ static class CompareLogicCore
             rotCompareResult = 1 - minRotSub / 360;
         }
 
-        // Debug.Log($"typeCompareResult: {typeCompareResult}, posCompareReslt: {posCompareReslt}, rotCompareResult: {rotCompareResult}");
 
 //根据TypeFactor, PosFactor, RotFactor 计算最终结果，最终结果范围为0到1，加权平均法
-        float result = (typeCompareResult*TypeFactor + posCompareReslt*PosFactor + rotCompareResult*RotFactor) / (TypeFactor + PosFactor + RotFactor);
-        return result;
-        // return typeCompareResult*posCompareReslt*rotCompareResult;
+
+        // float result = (typeCompareResult*TypeFactor + posCompareReslt*PosFactor + rotCompareResult*RotFactor) / (TypeFactor + PosFactor + RotFactor);
+        // return result;
+        return typeCompareResult*posCompareReslt*rotCompareResult;
 
     }
 }
@@ -212,7 +212,7 @@ public class MaskCoreUnit
         float sum = 0f;
         for (int i = 0; i < ListTemp.Count; i++) sum += ListTemp[i];
         //Log出临时表判断情况
-        // Debug.Log($"[MaskCoreUnit] 临时表情况: {string.Join(", ", ListTemp)}");
+        Debug.Log($"[MaskCoreUnit] 临时表情况: {string.Join(", ", ListTemp)}");
         return sum / ListTemp.Count;
     }
 }
