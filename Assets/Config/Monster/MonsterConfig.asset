@@ -14,3 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfig
   entries:
   - {fileID: 11400000, guid: b061f89e3d08814479babc60eff3cef7, type: 2}
+  - {fileID: 11400000, guid: 95d506c24a1570f4c8c57c1df3118683, type: 2}
+  - {fileID: 11400000, guid: 94a0530bdb52c434b88fd181b564186c, type: 2}
+  - {fileID: 11400000, guid: c427381396f5ee5459c98b20d7640b73, type: 2}
+  - {fileID: 11400000, guid: 2af972a8cc250924b9ffeb80ab40c422, type: 2}
+  - {fileID: 11400000, guid: 98e0055639f5bb0429246b5f80e999a7, type: 2}
+  - {fileID: 11400000, guid: 256855ce2e222194bab38873cbbce8d8, type: 2}
+  - {fileID: 11400000, guid: 2d797e38277084546bd263880f89d966, type: 2}
+  - {fileID: 11400000, guid: b7ce13f8bf8dace43add5eca5355e4af, type: 2}

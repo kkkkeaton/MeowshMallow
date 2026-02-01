@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3002
   m_EditorClassIdentifier: Assembly-CSharp::MonsterConfigData
   id: 3002
-  prefab: {fileID: 2156231962596082936, guid: 2ae8d327f5ccd4040959cfa722299b35, type: 3}
+  prefab: {fileID: 2490547120806894063, guid: aef03d3635627374fb4cfe3439ed82c6, type: 3}
   maxHp: 100
   moveSpeed: 1
   detectionRange: 8
@@ -24,3 +24,8 @@ MonoBehaviour:
   sameTypeThreshold: 0.38
   monsterTopoConfig: 
   dropComposable: {fileID: 11400000, guid: 4a648e7db957de344a9b8e75b0568898, type: 2}
+  moveSfxList: []
+  moveSfxInterval: 0.4
+  discoverSfx: {fileID: 0}
+  spottedSfx: {fileID: 0}
+  deathSfx: {fileID: 0}
