@@ -19,6 +19,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip _normalBgm;
     [Tooltip("暴露/被识破状态 BGM（如 Src/Music/danger）。")]
     [SerializeField] private AudioClip _dangerBgm;
+    [Tooltip("游戏胜利 BGM。")]
+    [SerializeField] private AudioClip _victoryBgm;
+    [Tooltip("游戏失败 BGM。")]
+    [SerializeField] private AudioClip _gameOverBgm;
 
     private AudioSource _currentBgmSource;
     private Coroutine _crossfadeRoutine;
@@ -51,6 +55,60 @@ public class AudioManager : MonoBehaviour
 
         if (God.Instance != null)
             God.Instance.Add(this);
+    }
+
+    private void Start()
+    {
+        SubscribeToGameEvents();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromGameEvents();
+    }
+
+    private void SubscribeToGameEvents()
+    {
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process == null) return;
+        process.OnVictory += OnVictory;
+        process.OnGameOver += OnGameOver;
+    }
+
+    private void UnsubscribeFromGameEvents()
+    {
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process == null) return;
+        process.OnVictory -= OnVictory;
+        process.OnGameOver -= OnGameOver;
+    }
+
+    private void OnVictory()
+    {
+        if (_victoryBgm != null)
+            PlayBgmWithCrossfade(_victoryBgm);
+        else
+            StopBgm();
+    }
+
+    private void OnGameOver()
+    {
+        if (_gameOverBgm != null)
+            PlayBgmWithCrossfade(_gameOverBgm);
+        else
+            StopBgm();
+    }
+
+    /// <summary>停止当前 BGM。</summary>
+    public void StopBgm()
+    {
+        if (_crossfadeRoutine != null)
+        {
+            StopCoroutine(_crossfadeRoutine);
+            _crossfadeRoutine = null;
+        }
+        if (_bgmSource != null) _bgmSource.Stop();
+        if (_bgmSourceSecondary != null) _bgmSourceSecondary.Stop();
     }
 
     // ---------- BGM ----------
