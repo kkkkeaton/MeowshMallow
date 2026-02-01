@@ -76,6 +76,7 @@ public class MonsterManager : MonoBehaviour
     {
         if (judger == null || beJudged == null) return false;
         var score = judger.JudgeMaskInfo(beJudged.GetMaskInfo());
+        Debug.Log($"[MonsterManager] 判断是否同类分数: {score}");
         return score >= threshold;
     }
 }
