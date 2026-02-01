@@ -110,9 +110,22 @@ public class MonsterAI : MonoBehaviour
         _spottedSfx = config.GetSpottedSfx(id);
     }
 
-    /// <summary>玩家与怪物拓扑匹配度是否 >= 同类阈值（视作同类则不索敌、不累积识破）。</summary>
+    /// <summary>玩家与怪物拓扑匹配度是否 >= 同类阈值（视作同类则不索敌、不累积识破）。无装扮时：若怪物也无部件则按颜色判同类，否则视为识破。</summary>
     private bool IsPlayerSameType()
     {
+        var composable = God.Instance?.Get<ComposableManager>();
+        bool playerHasParts = composable != null && composable.HasAnyPlayerComposable();
+        var playerColorId = _player != null ? (_player.GetComponent<Player>()?.GetColorId() ?? 1) : 1;
+        var monsterColorId = _monster.GetColorId();
+
+        if (!playerHasParts)
+        {
+            bool monsterHasParts = _monster.GetMaskInfo() != null && !_monster.GetMaskInfo().IsEmpty();
+            if (!monsterHasParts)
+                return playerColorId == monsterColorId;
+            return false;
+        }
+
         // var playerMask = _playerMaskInfoProvider?.GetMaskInfo();
         // if (playerMask == null) 
         // {
@@ -124,9 +137,6 @@ public class MonsterAI : MonoBehaviour
         // return similarity >= _sameTypeThreshold;
 
         var similarity_topo = God.Instance.Get<MonsterManager>().CheckIsSameKind(_monster, _playerMaskInfoProvider, _sameTypeThreshold);
-
-        var playerColorId = _player != null ? (_player.GetComponent<Player>()?.GetColorId() ?? 1) : 1;
-        var monsterColorId = _monster.GetColorId();
         var similarity_color = (playerColorId == monsterColorId);
 
         bool isSameType = similarity_topo && similarity_color;

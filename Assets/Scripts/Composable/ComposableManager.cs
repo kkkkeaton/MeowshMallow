@@ -164,7 +164,10 @@ public class ComposableManager : MonoBehaviour
         }
     }
 
-/// <summary>删除玩家的全部Composable</summary>
+    /// <summary>玩家当前是否挂有任意部件（无部件即无装扮，怪物应视为识破）。</summary>
+    public bool HasAnyPlayerComposable() => playerComposableList != null && playerComposableList.Count > 0;
+
+    /// <summary>删除玩家的全部Composable</summary>
     public void ClearAllPlayerComposable()
     {
         foreach (var composableMono in playerComposableList)

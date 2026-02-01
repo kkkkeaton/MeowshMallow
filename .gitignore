@@ -74,6 +74,7 @@ mono_crash.*
 *.app
 *.exe
 /Release
+*.zip
 
 # Crashlytics generated file
 crashlytics-build.properties

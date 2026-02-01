@@ -63,6 +63,8 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("[AudioManager] God.Instance 为空，未能注册；游戏音频将不可用。请确认场景中有 Launcher 且已指定 GodManager 预制体。", this);
 
         SubscribeToGameEvents();
+        // 主界面及游戏内平常状态共用平常 BGM，启动时即播放
+        PlayNormalBgm();
     }
 
     private void OnDestroy()

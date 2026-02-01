@@ -259,6 +259,7 @@ public class GameProcessManager : MonoBehaviour
 
         God.Instance?.Get<UIManager>()?.SetEnvPanelSpotted(false);
 
+        SyncExposureToUI();
         OnGameStart?.Invoke();
     }
 
@@ -272,6 +273,7 @@ public class GameProcessManager : MonoBehaviour
 
         _isEnded = true;
         _isPlaying = false;
+        _monstersSpottingPlayer.Clear();
         OnGameEnd?.Invoke();
     }
 
@@ -296,6 +298,8 @@ public class GameProcessManager : MonoBehaviour
         _isEnded = false;
         _playerState = PlayerExposureState.Normal;
         _disguiseImmunityRemaining = 0f;
+        _exposureGrowthPerSecond = _normalGrowthPerSecond;
+        _monstersSpottingPlayer.Clear();
         ResetExposure();
     }
 
