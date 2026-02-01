@@ -4,7 +4,7 @@ using UnityEngine;
 
 static class CompareLogicCore
 {
-    public static float TypeFactor = 1 ;
+    public static float TypeFactor = 2 ;
     public static float PosFactor = 1 ;
     public static float RotFactor  = 1 ;
     public static float Compare(Element a_element,Element b_element)
@@ -36,7 +36,10 @@ static class CompareLogicCore
 
         // Debug.Log($"typeCompareResult: {typeCompareResult}, posCompareReslt: {posCompareReslt}, rotCompareResult: {rotCompareResult}");
 
-        return typeCompareResult*posCompareReslt*rotCompareResult;
+//根据TypeFactor, PosFactor, RotFactor 计算最终结果，最终结果范围为0到1，加权平均法
+        float result = (typeCompareResult*TypeFactor + posCompareReslt*PosFactor + rotCompareResult*RotFactor) / (TypeFactor + PosFactor + RotFactor);
+        return result;
+        // return typeCompareResult*posCompareReslt*rotCompareResult;
 
     }
 }
