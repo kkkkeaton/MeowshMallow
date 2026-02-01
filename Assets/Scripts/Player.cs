@@ -77,23 +77,24 @@ public class Player : MonoBehaviour, IMaskInfoProvider
             UnityEngine.Debug.Log("[DebugTopo] 拓扑未初始化");
             return;
         }
-        for (int i = 0; i < playerMaskCore.UnitCount; i++)
+        var unit = playerMaskCore.MainMaskUnit;
+        if (unit == null)
         {
-            string str = "";
-            str += $"图{i + 1}：";
-            var unit = playerMaskCore.GetUnit(i);
-            for (int j = 0; j < unit.ElementCount; j++)
-            {
-                var ele = unit.GetElement(j);
-                str += $"\n\t元素{j + 1}：";
-                str += $"\n\t\t类别 {ele.type}";
-                str += $"\n\t\t位置 ({ele.pos.x}, {ele.pos.y})";
-                str += $"\n\t\t是否考虑旋转角（0或1） {(ele.considerRotFlag ? 1 : 0)}";
-                str += $"\n\t\t旋转角（0~360） {ele.rot}";
-                var rotListStr = ele.rotList != null ? string.Join(", ", ele.rotList) : "";
-                str += $"\n\t\t旋转角相似列表 {rotListStr}";
-            }
-            Debug.Log(str);
+            Debug.Log("[DebugTopo] MainMaskUnit 为空");
+            return;
         }
+        string str = "主图（MainMaskUnit）：";
+        for (int j = 0; j < unit.ElementCount; j++)
+        {
+            var ele = unit.GetElement(j);
+            str += $"\n\t元素{j + 1}：";
+            str += $"\n\t\t类别 {ele.type}";
+            str += $"\n\t\t位置 ({ele.pos.x}, {ele.pos.y})";
+            str += $"\n\t\t是否考虑旋转角（0或1） {(ele.considerRotFlag ? 1 : 0)}";
+            str += $"\n\t\t旋转角（0~360） {ele.rot}";
+            var rotListStr = ele.rotList != null ? string.Join(", ", ele.rotList) : "";
+            str += $"\n\t\t旋转角相似列表 {rotListStr}";
+        }
+        Debug.Log(str);
     }
 }

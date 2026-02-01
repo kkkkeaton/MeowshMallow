@@ -85,22 +85,36 @@ public class MaskCore
             Debug.LogWarning($"[MaskCore] 对方Mask为空，无法比较");
             return 0;
         }
-        if (UnitCount == 0 && other.UnitCount == 0)
+        var meIsEmpty = IsEmpty();
+        var otherIsEmpty = other.IsEmpty();
+        if (meIsEmpty && otherIsEmpty)
+        {
             return 1f;
-        if (UnitCount == 0 || other.UnitCount == 0)
+        }
+        if (meIsEmpty || otherIsEmpty)
+        {
             return 0f;
+        }
         float maxSimilarity = 0;
         foreach (var unit in maskUnits)
         {
-            float similarity = unit.Compare(other.mainMaskUnit);
+            float similarity = unit.Compare(other.MainMaskUnit);    
             maxSimilarity = Mathf.Max(maxSimilarity, similarity);
         }
         return maxSimilarity;
     }
 
+    public MaskCoreUnit MainMaskUnit => mainMaskUnit;
+
     public int UnitCount => maskUnits?.Count ?? 0;
     public MaskCoreUnit GetUnit(int index) => maskUnits[index];
 
+
+    /// <summary>MainMaskUnit 为空，或者里面包含的元素数量为 0，则返回 true。</summary>
+    public bool IsEmpty()
+    {
+        return mainMaskUnit == null || mainMaskUnit.ElementCount == 0;
+    }
     public void  AddOneElement2Main(Element element)
     {
         if( mainMaskUnit == null)
