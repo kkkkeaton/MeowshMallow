@@ -38,6 +38,9 @@ public class UIManager : MonoBehaviour
     /// <summary>旋转提示物体（MainUI 下名为 "R" 的物体，拖拽物品时显示）。</summary>
     private GameObject _rotateHint;
 
+    /// <summary>MainUI 下名为 "Env_Panel" 的 Image，用于被识破时变红、非识破时黑色。</summary>
+    private Image _envPanelImage;
+
     private static readonly Color ExposedFillColorAtZero = new Color(0.498f, 0.745f, 0.635f); // #7fbea2
     private static readonly Color ExposedFillColorAtMid = new Color(0.706f, 0.439f, 0.184f);   // #b4702f 50%
     private static readonly Color ExposedFillColorAtFull = new Color(0.827f, 0.153f, 0.239f); // #d3393d
@@ -79,6 +82,7 @@ public class UIManager : MonoBehaviour
         SetPickableHintVisible(false);
         SetAssassinationHintVisible(false);
         SetRotateHintVisible(false);
+        SetEnvPanelSpotted(false);
 
         Time.timeScale = 0f;
     }
@@ -192,12 +196,18 @@ public class UIManager : MonoBehaviour
         _pickableHint = null;
         _assassinationHint = null;
         _rotateHint = null;
+        _envPanelImage = null;
         if (_mainUIInstance == null) return;
         foreach (Transform t in _mainUIInstance.GetComponentsInChildren<Transform>(true))
         {
             if (t.name == "E") _pickableHint = t.gameObject;
             else if (t.name == "F") _assassinationHint = t.gameObject;
             else if (t.name == "R") _rotateHint = t.gameObject;
+            else if (t.name == "Env_Panel")
+            {
+                var img = t.GetComponent<Image>();
+                if (img != null) _envPanelImage = img;
+            }
         }
     }
 
@@ -226,6 +236,13 @@ public class UIManager : MonoBehaviour
         _rotateHint.SetActive(visible);
         if (visible && !string.IsNullOrEmpty(text))
             SetHintChildText(_rotateHint.transform, text);
+    }
+
+    /// <summary>设置 MainUI 中 Env_Panel 颜色：被识破为红，非识破为黑。</summary>
+    public void SetEnvPanelSpotted(bool isSpotted)
+    {
+        if (_envPanelImage == null) return;
+        _envPanelImage.color = isSpotted ? Color.red : Color.black;
     }
 
     /// <summary>在指定节点下查找第一个 Text 或 TextMeshProUGUI 子物体并设置其文本。</summary>
