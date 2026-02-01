@@ -188,6 +188,12 @@ public class UIManager : MonoBehaviour
     private void OnTBtnClicked()
     {
         God.Instance?.Get<ComposableManager>()?.ClearAllPlayerComposable();
+        var playerGo = God.Instance?.Player;
+        if (playerGo != null)
+        {
+            var player = playerGo.GetComponent<Player>();
+            if (player != null) player.ChangeColor(1);
+        }
     }
 
     /// <summary>从 MainUI 子物体中按名称查找「E」「F」「R」并缓存为范围提示引用。</summary>

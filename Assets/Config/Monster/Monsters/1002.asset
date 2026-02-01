@@ -21,7 +21,7 @@ MonoBehaviour:
   detectionFillRatePerSecond: 20
   detectionMaxValue: 100
   colorId: 1
-  sameTypeThreshold: 0.38
+  sameTypeThreshold: 0.5
   monsterTopoConfig: 1@1-2@0.329^0.6815-3@1-4@87.4-5@180;1@1-2@0.6895^0.6865-3@1-4@351.7-5@180;1@1-2@0.3055^0.4895-3@1-4@153.3-5@180;1@1-2@0.699^0.4975-3@1-4@288.1-5@180
   dropComposable: {fileID: 11400000, guid: c3ea1990916937f48868971b43857b7b, type: 2}
   moveSfxList:
