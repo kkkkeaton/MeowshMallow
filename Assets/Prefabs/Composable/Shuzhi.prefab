@@ -55,6 +55,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1179100004065349442}
   - component: {fileID: 7697381178640551902}
+  - component: {fileID: 7399878157734837238}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -122,8 +123,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 710657313
-  m_SortingLayer: 3
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 2840350788199557998, guid: ff48a597939bc924fa4e6f6d3306f866, type: 3}
@@ -136,3 +137,17 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &7399878157734837238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3149882692051091322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bcde3c155a3d5479beb4f48ef88a0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::YSortFollow_Player
+  followTransformName: MainPart
+  yOffset: 1
