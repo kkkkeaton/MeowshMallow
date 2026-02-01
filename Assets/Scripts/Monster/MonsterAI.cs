@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using DG.Tweening;
 
 /// <summary>
@@ -18,9 +19,25 @@ public class MonsterAI : MonoBehaviour
     [Tooltip("发现玩家时是否播放抖动小动画")]
     [SerializeField] private bool discoverShakeEnabled = true;
     [Tooltip("抖动持续时间（秒）")]
-    [SerializeField] private float discoverShakeDuration = 0.2f;
+    [SerializeField] private float discoverShakeDuration = 2f;
     [Tooltip("抖动强度（2D 下为 XY 方向位移幅度）")]
-    [SerializeField] private float discoverShakeStrength = 0.08f;
+    [SerializeField] private float discoverShakeStrength = 2f;
+
+    [Header("状态表现（子物体 suspect / bark）")]
+    [Tooltip("警觉状态表现：进入追踪或观察时闪一下；不填则用子物体名 suspect")]
+    [SerializeField] private GameObject _suspect;
+    [Tooltip("发现状态表现：识破值满时闪一下；不填则用子物体名 bark")]
+    [SerializeField] private GameObject _bark;
+    [Tooltip("问号/叹号总显示时长（秒）")]
+    [SerializeField] private float _flashDuration = 1.5f;
+    [Tooltip("DOTween 上移+放大动画时长（秒）")]
+    [SerializeField] private float _flashTweenDuration = 0.3f;
+    [Tooltip("动画：起始相对高度（本地 Y，负=在默认下方）")]
+    [SerializeField] private float _flashStartOffsetY = -0.3f;
+    [Tooltip("动画：结束相对高度（本地 Y，正=在默认上方）")]
+    [SerializeField] private float _flashEndOffsetY = 0.5f;
+    [Tooltip("动画：起始缩放倍数（相对预制体默认 scale）")]
+    [SerializeField] private float _flashStartScale = 0.3f;
 
     [Header("调试")]
     [Tooltip("勾选后状态切换时在 Console 输出，便于验证索敌与移动")]
@@ -50,6 +67,10 @@ public class MonsterAI : MonoBehaviour
     {
         _monster = GetComponent<MonsterBase>();
         if (_monster == null) return;
+        if (_suspect == null) _suspect = transform.Find("suspect")?.gameObject;
+        if (_bark == null) _bark = transform.Find("bark")?.gameObject;
+        if (_suspect != null) _suspect.SetActive(false);
+        if (_bark != null) _bark.SetActive(false);
         ApplyConfig();
     }
 
@@ -145,6 +166,7 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Approaching;
                     PlayDiscoverShake();
+                    FlashSuspect();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 进入索敌，开始接近玩家 (距离={distToPlayer:F1})");
                 }
                 break;
@@ -160,6 +182,7 @@ public class MonsterAI : MonoBehaviour
                 if (distToPlayer <= _approachDistance )
                 {
                     _state = State.Observing;
+                    FlashSuspect();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 到达观察距离，开始观察玩家 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -187,17 +210,19 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Approaching;
                     PlayDiscoverShake();
+                    FlashSuspect();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家再次进入探测范围，重新开始跟随 (距离={distToPlayer:F1})");
                 }
                 break;
         }
     }
 
-    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值。仅在 Approaching/Observing 中累积后调用。</summary>
+    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值；闪一下 bark。仅在 Approaching/Observing 中累积后调用。</summary>
     private void TryTriggerDetectionFull()
     {
         if (_currentDetectionValue < _detectionMaxValue) return;
         _currentDetectionValue = _detectionMaxValue;
+        FlashBark();
         var process = God.Instance?.Get<GameProcessManager>();
         if (process != null)
             process.EnterSpotted();
@@ -205,6 +230,45 @@ public class MonsterAI : MonoBehaviour
         if (exposure != null)
             exposure.AddExposureForMonsterType(_monster.GetId(), 1f);
         _currentDetectionValue = 0f;
+    }
+
+    /// <summary>进入追踪或观察时闪一下 suspect（警觉状态表现）。</summary>
+    private void FlashSuspect()
+    {
+        if (_suspect != null) StartCoroutine(FlashRoutine(_suspect));
+    }
+
+    /// <summary>识破值满时闪一下 bark（发现状态表现）。</summary>
+    private void FlashBark()
+    {
+        if (_bark != null) StartCoroutine(FlashRoutine(_bark));
+    }
+
+    private IEnumerator FlashRoutine(GameObject obj)
+    {
+        if (obj == null) yield break;
+        Transform t = obj.transform;
+        Vector3 restLocalPos = t.localPosition;
+        Vector3 restLocalScale = t.localScale;
+
+        t.localPosition = restLocalPos + Vector3.up * _flashStartOffsetY;
+        t.localScale = restLocalScale * _flashStartScale;
+        obj.SetActive(true);
+
+        float tweenDur = Mathf.Max(0.01f, _flashTweenDuration);
+        t.DOKill(true);
+        t.DOLocalMove(restLocalPos + Vector3.up * _flashEndOffsetY, tweenDur).SetEase(Ease.OutQuad);
+        t.DOScale(restLocalScale, tweenDur).SetEase(Ease.OutBack);
+
+        yield return new WaitForSeconds(_flashDuration);
+
+        if (obj != null)
+        {
+            t.DOKill(true);
+            t.localPosition = restLocalPos;
+            t.localScale = restLocalScale;
+            obj.SetActive(false);
+        }
     }
 
     private void FacePlayer(Vector2 myPos, Vector2 playerPos)
