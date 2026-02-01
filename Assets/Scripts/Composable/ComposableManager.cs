@@ -17,12 +17,41 @@ public class ComposableManager : MonoBehaviour
     Dictionary<int, ComposableMono> composableMonoDict = new Dictionary<int, ComposableMono>();
 
     List<ComposableMono> playerComposableList = new List<ComposableMono>();
+    
     public void Awake()
     {
         if (God.Instance != null)
             God.Instance.Add(this);
 
         player = FindFirstObjectByType<Player>();
+    }
+
+    private void Start()
+    {
+        SubscribeToPlayerEvents();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromPlayerEvents();
+    }
+
+    private void SubscribeToPlayerEvents()
+    {
+        if (player != null)
+            player.OnDisguiseChanged += OnPlayerDisguiseChanged;
+    }
+
+    private void UnsubscribeFromPlayerEvents()
+    {
+        if (player != null)
+            player.OnDisguiseChanged -= OnPlayerDisguiseChanged;
+    }
+
+    private void OnPlayerDisguiseChanged()
+    {
+        var monsterManager = God.Instance?.Get<MonsterManager>();
+        monsterManager?.CheckAllMonstersDisguise();
     }
 
     /// <summary>仅按 id 生成（用于测试），pos=0、rot=0。</summary>

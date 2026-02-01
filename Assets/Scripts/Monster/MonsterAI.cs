@@ -61,6 +61,9 @@ public class MonsterAI : MonoBehaviour
     private Coroutine _suspectCoroutine;
     private Coroutine _barkCoroutine;
 
+    /// <summary>当前是否被判定为同类（伪装成功）；仅在收到通知时更新，避免每帧检测。</summary>
+    private bool _isSameType;
+
     /// <summary>当前识破值（0 ~ 满值）；满后不立刻清零，等死亡或丢失视野后清零。</summary>
     private float _currentDetectionValue;
 
@@ -161,6 +164,15 @@ public class MonsterAI : MonoBehaviour
         }
         else
             Debug.LogWarning($"[MonsterAI] {gameObject.name} 未找到 Tag=\"{playerTag}\" 的玩家，索敌与移动将不生效。请为玩家 GameObject 设置 Tag 为 Player。");
+        
+        // 初始检测一次伪装状态
+        CheckPlayerDisguise();
+    }
+
+    /// <summary>由 MonsterManager 调用：当玩家装扮变化时重新检测是否伪装成功。</summary>
+    public void CheckPlayerDisguise()
+    {
+        _isSameType = IsPlayerSameType();
     }
 
     private void Update()
@@ -170,9 +182,9 @@ public class MonsterAI : MonoBehaviour
         Vector2 myPos = transform.position;
         Vector2 playerPos = _player.position;
         float distToPlayer = Vector2.Distance(myPos, playerPos);
-        var isSameType = IsPlayerSameType();
 
-        if (isSameType)
+        // 使用缓存的伪装状态（仅在装扮变化时更新）
+        if (_isSameType)
         {
             God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
             _state = State.Idle;

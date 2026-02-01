@@ -16,6 +16,17 @@ public class MonsterManager : MonoBehaviour
             God.Instance.Add(this);
     }
 
+    /// <summary>通知所有存活的怪物重新检测玩家伪装（当玩家装扮变化时由 Player/ComposableManager 触发）。</summary>
+    public void CheckAllMonstersDisguise()
+    {
+        foreach (var monster in aliveMonsters)
+        {
+            if (monster == null) continue;
+            var ai = monster.GetComponent<MonsterAI>();
+            ai?.CheckPlayerDisguise();
+        }
+    }
+
     /// <summary>在指定位置生成指定 ID 的怪物，并加入存活列表、订阅死亡回调。失败返回 null。</summary>
     public MonsterBase SpawnMonster(string id, Vector2 position)
     {

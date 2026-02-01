@@ -9,6 +9,9 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     /// <summary>玩家当前颜色 ID，初始为 1。</summary>
     private int _colorId = 1;
 
+    /// <summary>玩家拓扑或颜色变化时触发（供 MonsterManager 监听并通知所有怪物重新判断伪装）。</summary>
+    public event System.Action OnDisguiseChanged;
+
     public PlayerConfig playerConfig;
     public SpriteRenderer mainPartRenderer;
 
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour, IMaskInfoProvider
         ApplyColorSprite();
         if (changeColorSfx != null)
             God.Instance?.Get<AudioManager>()?.PlaySfx(changeColorSfx);
+        OnDisguiseChanged?.Invoke();
     }
 
     /// <summary>根据当前颜色 ID 从 PlayerConfig 取 Sprite 并应用到 MainPart。</summary>
@@ -62,11 +66,15 @@ public class Player : MonoBehaviour, IMaskInfoProvider
     public void AddOneElement2Main(Element element)
     {
         playerMaskCore.AddOneElement2Main(element);
+        OnDisguiseChanged?.Invoke();
     }
 
     public bool TryRemoveOneElementFromMain(int typeId,Vector2 pos,float rot)
     {
-        return playerMaskCore.TryRemoveOneElementFromMain(typeId, pos, rot);
+        bool result = playerMaskCore.TryRemoveOneElementFromMain(typeId, pos, rot);
+        if (result)
+            OnDisguiseChanged?.Invoke();
+        return result;
     }
 
         //调用此函数，自动输出自己的拓扑结构中的内容，要求说清楚自己有几张图，每张图有几个元素，每个元素有哪些属性，每个属性是怎样的，输出到控制台里
