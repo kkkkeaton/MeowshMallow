@@ -22,5 +22,12 @@ MonoBehaviour:
   detectionMaxValue: 100
   colorId: 1
   sameTypeThreshold: 0.38
+  - {fileID: 8300000, guid: 7199cfb897d445bd29d5ab654adba64e, type: 3}
+  moveSfxList:
+  - {fileID: 8300000, guid: f14b13b858f1772f49897a6793c8197c, type: 3}
+  discoverSfx: {fileID: 0}
+  moveSfxInterval: 0.4
+  spottedSfx: {fileID: 8300000, guid: 94cfc8533dd507a0c8454bcdffdaaaef, type: 3}
+  deathSfx: {fileID: 8300000, guid: d62854347d412a03d88d0be3502f9457, type: 3}
   monsterTopoConfig: 1@1-2@0.329^0.6815-3@1-4@87.4-5@180;1@1-2@0.6895^0.6865-3@1-4@351.7-5@180;1@1-2@0.3055^0.4895-3@1-4@153.3-5@180;1@1-2@0.699^0.4975-3@1-4@288.1-5@180
   dropComposable: {fileID: 11400000, guid: c3ea1990916937f48868971b43857b7b, type: 2}

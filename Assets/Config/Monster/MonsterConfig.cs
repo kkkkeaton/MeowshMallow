@@ -109,4 +109,39 @@ public class MonsterConfig : ScriptableObject
         BuildCache();
         return _cache != null && _cache.TryGetValue(id, out var e) ? e.DropComposable : null;
     }
+
+    /// <summary>根据怪物 ID 获取移动音效列表，未配置或未找到返回空数组。</summary>
+    public AudioClip[] GetMoveSfxList(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.MoveSfxList : System.Array.Empty<AudioClip>();
+    }
+
+    /// <summary>根据怪物 ID 获取移动音效播放间隔（秒），未找到返回 0.4。</summary>
+    public float GetMoveSfxInterval(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.MoveSfxInterval : 0.4f;
+    }
+
+    /// <summary>根据怪物 ID 获取发现玩家音效，未配置返回 null。</summary>
+    public AudioClip GetDiscoverSfx(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.DiscoverSfx : null;
+    }
+
+    /// <summary>根据怪物 ID 获取识破玩家音效，未配置返回 null。</summary>
+    public AudioClip GetSpottedSfx(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.SpottedSfx : null;
+    }
+
+    /// <summary>根据怪物 ID 获取死亡音效，未配置返回 null。</summary>
+    public AudioClip GetDeathSfx(string id)
+    {
+        BuildCache();
+        return _cache != null && _cache.TryGetValue(id, out var e) ? e.DeathSfx : null;
+    }
 }

@@ -31,11 +31,14 @@ public class MonsterManager : MonoBehaviour
         return monster;
     }
 
-    /// <summary>怪物死亡时由 OnDeath 触发：取消订阅并从存活列表中移除；若该怪正在识破玩家，从识破列表移除（可能触发「骗过所有怪物」减暴露值）。</summary>
+    /// <summary>怪物死亡时由 OnDeath 触发：播放死亡音效、取消订阅并从存活列表中移除；若该怪正在识破玩家，从识破列表移除。</summary>
     private void OnMonsterDeath(IMonster monster)
     {
         if (monster is MonsterBase mb)
         {
+            var deathClip = config?.GetDeathSfx(mb.GetId());
+            if (deathClip != null)
+                God.Instance?.Get<AudioManager>()?.PlaySfx(deathClip);
             mb.OnDeath -= OnMonsterDeath;
             aliveMonsters.Remove(mb);
             God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(mb);
@@ -57,11 +60,13 @@ public class MonsterManager : MonoBehaviour
             SpawnDrop(position, dropComposable);
     }
 
-    /// <summary>在指定位置生成一个 PickableItem 掉落物，直接传入 Composable。</summary>
+    /// <summary>在指定位置生成一个 PickableItem 掉落物，直接传入 Composable，并按类型播放掉落音效。</summary>
     public void SpawnDrop(Vector2 position, Composable dropComposable)
     {
         if (dropComposable == null || pickableItemDropPrefab == null) return;
         if (pickableItemDropPrefab.GetComponent<PickableItem>() == null) return;
+
+        God.Instance?.Get<AudioManager>()?.PlayDropSfxForItemType(dropComposable.itemTypeId);
 
         GameObject instance = Instantiate(pickableItemDropPrefab, position, Quaternion.identity, transform);
         var item = instance.GetComponent<PickableItem>();

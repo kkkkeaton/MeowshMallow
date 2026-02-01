@@ -14,6 +14,10 @@ public class Player : MonoBehaviour, IMaskInfoProvider
 
     public Transform ComposableParent;
 
+    [Header("音效")]
+    [Tooltip("变色时播放的音效")]
+    [SerializeField] private AudioClip changeColorSfx;
+
     public virtual MaskCore GetMaskInfo()
     {
         return playerMaskCore;
@@ -41,6 +45,8 @@ public class Player : MonoBehaviour, IMaskInfoProvider
         Debug.Log($"[Player] 切换玩家颜色为: {colorId}");
         _colorId = colorId;
         ApplyColorSprite();
+        if (changeColorSfx != null)
+            God.Instance?.Get<AudioManager>()?.PlaySfx(changeColorSfx);
     }
 
     /// <summary>根据当前颜色 ID 从 PlayerConfig 取 Sprite 并应用到 MainPart。</summary>

@@ -50,6 +50,20 @@ public class MonsterConfigData : ScriptableObject
     [Tooltip("暗杀/死亡时掉落的 Composable，配置其 topoComponent 作为 PickableItem 的拾取内容；空则不掉落")]
     [SerializeField] private Composable dropComposable;
 
+    [Header("移动音效")]
+    [Tooltip("移动时循环随机播放的音效列表，可配多个；空则静默")]
+    [SerializeField] private AudioClip[] moveSfxList = System.Array.Empty<AudioClip>();
+    [Tooltip("两次播放间隔（秒），越小越密集")]
+    [SerializeField] private float moveSfxInterval = 0.4f;
+
+    [Header("其它音效")]
+    [Tooltip("发现玩家时播放（进入追踪或观察）")]
+    [SerializeField] private AudioClip discoverSfx;
+    [Tooltip("识破值满、识破玩家时播放")]
+    [SerializeField] private AudioClip spottedSfx;
+    [Tooltip("怪物死亡时播放")]
+    [SerializeField] private AudioClip deathSfx;
+
     /// <summary>怪物类型 ID。</summary>
     public string Id => id;
 
@@ -85,4 +99,19 @@ public class MonsterConfigData : ScriptableObject
 
     /// <summary>掉落配置（暗杀/死亡时生成 PickableItem 使用其 topoComponent）；空则不掉落。</summary>
     public Composable DropComposable => dropComposable;
+
+    /// <summary>移动时随机播放的音效列表；空则无音效。</summary>
+    public AudioClip[] MoveSfxList => moveSfxList;
+
+    /// <summary>移动音效两次播放间隔（秒）。</summary>
+    public float MoveSfxInterval => moveSfxInterval;
+
+    /// <summary>发现玩家时音效；空则不播放。</summary>
+    public AudioClip DiscoverSfx => discoverSfx;
+
+    /// <summary>识破玩家时音效；空则不播放。</summary>
+    public AudioClip SpottedSfx => spottedSfx;
+
+    /// <summary>死亡时音效；空则不播放。</summary>
+    public AudioClip DeathSfx => deathSfx;
 }

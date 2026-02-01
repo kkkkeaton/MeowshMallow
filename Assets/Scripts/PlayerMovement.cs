@@ -36,6 +36,12 @@ namespace MeowshMallow
         [Tooltip("水源区域的碰撞体 Tag，进入后按交互键可将玩家颜色改为 2")]
         [SerializeField] private string waterSourceTag = "WaterSource";
 
+        [Header("脚步声")]
+        [Tooltip("移动时循环随机播放的脚步声列表，可配多个；空则静默")]
+        [SerializeField] private AudioClip[] footstepSfxList = System.Array.Empty<AudioClip>();
+        [Tooltip("两次播放间隔（秒）")]
+        [SerializeField] private float footstepSfxInterval = 0.4f;
+
         [SerializeField] private AnimationCurve moveSpeedCurve;
 
         [SerializeField] private float moveCurveOneTime = 1f;
@@ -50,6 +56,7 @@ namespace MeowshMallow
         private Vector2 _moveInput;
         private Vector2 _currentVelocity;
         private int _waterSourceTriggerCount;
+        private float _footstepSfxCooldown;
 
         private void Awake()
         {
@@ -188,6 +195,22 @@ namespace MeowshMallow
             float rate = move.sqrMagnitude > 0.01f ? acceleration : decel;
             _currentVelocity = Vector2.MoveTowards(_currentVelocity, targetVelocity, rate * Time.fixedDeltaTime);
             _rb.linearVelocity = _currentVelocity;
+
+            if (move.sqrMagnitude > 0.01f && _currentVelocity.sqrMagnitude > 0.01f)
+                TryPlayFootstepSfx();
+        }
+
+        private void TryPlayFootstepSfx()
+        {
+            if (footstepSfxList == null || footstepSfxList.Length == 0 || footstepSfxInterval <= 0f) return;
+            _footstepSfxCooldown -= Time.fixedDeltaTime;
+            if (_footstepSfxCooldown <= 0f)
+            {
+                _footstepSfxCooldown = footstepSfxInterval;
+                var clip = footstepSfxList[Random.Range(0, footstepSfxList.Length)];
+                if (clip != null)
+                    God.Instance?.Get<AudioManager>()?.PlaySfx(clip);
+            }
         }
     }
 }

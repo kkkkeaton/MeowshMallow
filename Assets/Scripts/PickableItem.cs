@@ -8,10 +8,16 @@ public class PickableItem : MonoBehaviour
     [Header("可组合配置（捡起后传给 Backpack；可空则运行时由 InitWithComposable 注入）")]
     [SerializeField] private Composable _composable;
 
+    [Tooltip("物品类型 ID，用于按类型播放捡起/掉落音效；有 Composable 时从其 itemTypeId 取")]
+    [SerializeField] private int _itemTypeId;
+
     private const string MapItemSortingLayer = "MapItem";
 
     /// <summary>捡起判定距离，取自 GlobalSetting.PICKUP_RANGE。</summary>
     public float PickupRadius => GlobalSetting.PICKUP_RANGE;
+
+    /// <summary>物品类型 ID，用于音效查找。</summary>
+    public int ItemTypeId => _composable != null ? _composable.itemTypeId : _itemTypeId;
 
     private void Awake()
     {
@@ -32,17 +38,19 @@ public class PickableItem : MonoBehaviour
             sr.sortingLayerName = MapItemSortingLayer;
     }
 
-    /// <summary>运行时设置 Composable 并生成显示（用于掉落等动态生成的可捡物体）。</summary>
+    /// <summary>运行时设置 Composable 并生成显示（用于掉落等动态生成的可捡物体）。itemTypeId 由 composable.itemTypeId 提供。</summary>
     public void InitWithComposable(Composable composable)
     {
         _composable = composable;
         TrySpawnVisual();
     }
 
-    /// <summary>执行捡起：将 Composable 交给 Backpack 并销毁本物体。由 PlayerMovement 在交互键按下且本物体在范围内时调用。</summary>
+    /// <summary>执行捡起：按类型播放捡起音效、将 Composable 交给 Backpack 并销毁本物体。</summary>
     public void DoPickup()
     {
         if (_composable == null) return;
+
+        God.Instance?.Get<AudioManager>()?.PlayPickupSfxForItemType(ItemTypeId);
 
         Backpack backpack = God.Instance?.Get<Backpack>();
         if (backpack != null)
