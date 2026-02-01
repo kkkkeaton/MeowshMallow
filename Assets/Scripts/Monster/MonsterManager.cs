@@ -16,7 +16,7 @@ public class MonsterManager : MonoBehaviour
             God.Instance.Add(this);
     }
 
-    /// <summary>通知所有存活的怪物重新检测玩家伪装（当玩家装扮变化时由 Player/ComposableManager 触发）。</summary>
+    /// <summary>通知所有存活的怪物重新检测玩家伪装（当玩家放置部件或改变颜色时由 ComposableManager 等触发）。若重检后范围内无怪识破玩家，则视为伪装成功并调用 EnterDisguiseSuccess。</summary>
     public void CheckAllMonstersDisguise()
     {
         foreach (var monster in aliveMonsters)
@@ -25,6 +25,9 @@ public class MonsterManager : MonoBehaviour
             var ai = monster.GetComponent<MonsterAI>();
             ai?.CheckPlayerDisguise();
         }
+        var process = God.Instance?.Get<GameProcessManager>();
+        if (process != null && process.MonstersSpottingPlayerCount == 0)
+            process.EnterDisguiseSuccess();
     }
 
     /// <summary>在指定位置生成指定 ID 的怪物，并加入存活列表、订阅死亡回调。失败返回 null。</summary>

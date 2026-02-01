@@ -403,14 +403,11 @@ public class GameProcessManager : MonoBehaviour
         _monstersSpottingPlayer.Add(monster);
     }
 
-    /// <summary>怪物不再识破玩家（玩家离开观测范围或怪物死亡）时由 MonsterAI / MonsterManager 调用。若列表从有变为无，视为玩家骗过所有怪物，减少暴露值。</summary>
+    /// <summary>怪物不再识破玩家（玩家离开观测范围或怪物死亡）时由 MonsterAI / MonsterManager 调用。仅从列表移除，不触发伪装成功（伪装成功由放置部件/改色后 CheckAllMonstersDisguise 判定）。</summary>
     public void UnregisterSpotting(IMonster monster)
     {
         if (monster == null) return;
-        int countBefore = _monstersSpottingPlayer.Count;
         _monstersSpottingPlayer.Remove(monster);
-        if (countBefore > 0 && _monstersSpottingPlayer.Count == 0)
-            SubtractExposure(_allMonstersLostTrackExposureDecrease);
     }
 
     /// <summary>当前正在识破玩家的怪物数量（只读）。</summary>

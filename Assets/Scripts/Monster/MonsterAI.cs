@@ -169,10 +169,12 @@ public class MonsterAI : MonoBehaviour
         CheckPlayerDisguise();
     }
 
-    /// <summary>由 MonsterManager 调用：当玩家装扮变化时重新检测是否伪装成功。</summary>
+    /// <summary>由 MonsterManager 调用：当玩家装扮变化时重新检测是否伪装成功。若判定为同类则立即从识破列表移除，便于同一帧内判定「无怪识破」后触发 EnterDisguiseSuccess。</summary>
     public void CheckPlayerDisguise()
     {
         _isSameType = IsPlayerSameType();
+        if (_isSameType)
+            God.Instance?.Get<GameProcessManager>()?.UnregisterSpotting(_monster);
     }
 
     private void Update()
