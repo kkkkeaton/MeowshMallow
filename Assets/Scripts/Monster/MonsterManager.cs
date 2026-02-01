@@ -111,4 +111,10 @@ public class MonsterManager : MonoBehaviour
         Debug.Log($"[MonsterManager] 判断是否同类分数: {score}");
         return score >= threshold;
     }
+
+    public void ReStart()
+    {
+        //清理与重置
+        ClearAllMonsters();
+    }
 }

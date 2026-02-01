@@ -7,6 +7,8 @@ public class ComposableManager : MonoBehaviour
     Player player;
     int _genId = 1;
 
+    bool isInit = false;
+
     string playerTopoString = "";
 
     float PLAYER_NEAR_WORLD_RADIUS = GlobalSetting.PLAYER_NEAR_WORLD_RADIUS;
@@ -39,8 +41,8 @@ public class ComposableManager : MonoBehaviour
 
     private void SubscribeToPlayerEvents()
     {
-        if (player == null)
-            player = God.Instance?.Get<Player>() ?? God.Instance?.Player?.GetComponent<Player>() ?? FindFirstObjectByType<Player>();
+        UnsubscribeFromPlayerEvents();
+        player = God.Instance?.Get<Player>() ?? God.Instance?.Player?.GetComponent<Player>() ?? FindFirstObjectByType<Player>();
         if (player != null)
             player.OnDisguiseChanged += OnPlayerDisguiseChanged;
     }
@@ -173,6 +175,17 @@ public class ComposableManager : MonoBehaviour
         playerComposableList.Clear();
     }
 
+
+    public void ReStart()
+    {
+        //清理与重置
+        ClearAllPlayerComposable();
+        composableMonoDict.Clear();
+        playerComposableList.Clear();
+        _genId = 1;
+        playerTopoString = "";
+        isInit = false;
+    }
 
 
 
