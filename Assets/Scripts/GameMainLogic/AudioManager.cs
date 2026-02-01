@@ -26,8 +26,8 @@ public class AudioManager : MonoBehaviour
     [Header("小音效")]
     [Tooltip("播放小音效的 AudioSource，不填则使用本物体上的第二个 AudioSource 或与 BGM 共用。")]
     [SerializeField] private AudioSource _sfxSource;
-    [Tooltip("捡起物品音效。")]
-    [SerializeField] private AudioClip _pickupSfx;
+    [Tooltip("物品类型音效配置（按类型播放捡起/掉落音效）；不填则静默。")]
+    [SerializeField] private ItemTypeAudioConfig _itemTypeAudioConfig;
     [Tooltip("暗杀成功音效。")]
     [SerializeField] private AudioClip _assassinationSfx;
 
@@ -134,11 +134,20 @@ public class AudioManager : MonoBehaviour
 
     // ---------- 小音效（OneShot，不打断 BGM） ----------
 
-    /// <summary>播放捡起物品音效。</summary>
-    public void PlayPickupSfx()
+    /// <summary>按物品类型播放捡起音效。</summary>
+    public void PlayPickupSfxForItemType(int itemTypeId)
     {
-        if (_sfxSource != null && _pickupSfx != null)
-            _sfxSource.PlayOneShot(_pickupSfx);
+        var clip = _itemTypeAudioConfig?.GetPickupSfx(itemTypeId);
+        if (_sfxSource != null && clip != null)
+            _sfxSource.PlayOneShot(clip);
+    }
+
+    /// <summary>按物品类型播放掉落音效。</summary>
+    public void PlayDropSfxForItemType(int itemTypeId)
+    {
+        var clip = _itemTypeAudioConfig?.GetDropSfx(itemTypeId);
+        if (_sfxSource != null && clip != null)
+            _sfxSource.PlayOneShot(clip);
     }
 
     /// <summary>播放暗杀成功音效。</summary>

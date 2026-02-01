@@ -257,6 +257,10 @@ MonoBehaviour:
   acceleration: 20
   deceleration: 25
   waterSourceTag: WaterSource
+  footstepSfxList:
+  - {fileID: 8300000, guid: 99740902e84510db5aae99ee2025c5f9, type: 3}
+  - {fileID: 8300000, guid: ff2625d3ff4e04a809dfbaba5266a16d, type: 3}
+  footstepSfxInterval: 0.4
   moveSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -337,6 +341,7 @@ MonoBehaviour:
   playerConfig: {fileID: 11400000, guid: 252c6d8a0e57b9d428c3e3e04d782c1a, type: 2}
   mainPartRenderer: {fileID: 6123287721788936571}
   ComposableParent: {fileID: 8847224528889694143}
+  changeColorSfx: {fileID: 8300000, guid: 8256e1f88dac2c568961aae51879e0f3, type: 3}
 --- !u!61 &3061122187431153434
 BoxCollider2D:
   m_ObjectHideFlags: 0

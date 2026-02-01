@@ -55,6 +55,11 @@ public class MonsterAI : MonoBehaviour
     private float _detectionFillRatePerSecond;
     private float _detectionMaxValue;
     private float _sameTypeThreshold;
+    private AudioClip[] _moveSfxList;
+    private float _moveSfxInterval;
+    private float _moveSfxCooldown;
+    private AudioClip _discoverSfx;
+    private AudioClip _spottedSfx;
 
     /// <summary>当前识破值（0 ~ 满值）。</summary>
     private float _currentDetectionValue;
@@ -85,6 +90,10 @@ public class MonsterAI : MonoBehaviour
         _detectionFillRatePerSecond = config.GetDetectionFillRatePerSecond(id);
         _detectionMaxValue = config.GetDetectionMaxValue(id);
         _sameTypeThreshold = config.GetSameTypeThreshold(id);
+        _moveSfxList = config.GetMoveSfxList(id);
+        _moveSfxInterval = config.GetMoveSfxInterval(id);
+        _discoverSfx = config.GetDiscoverSfx(id);
+        _spottedSfx = config.GetSpottedSfx(id);
     }
 
     /// <summary>玩家与怪物拓扑匹配度是否 >= 同类阈值（视作同类则不索敌、不累积识破）。</summary>
@@ -169,6 +178,7 @@ public class MonsterAI : MonoBehaviour
                     God.Instance?.Get<GameProcessManager>()?.RegisterSpotting(_monster);
                     PlayDiscoverShake();
                     FlashSuspect();
+                    PlayDiscoverSfx();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 进入索敌，开始接近玩家 (距离={distToPlayer:F1})");
                 }
                 break;
@@ -186,6 +196,7 @@ public class MonsterAI : MonoBehaviour
                 {
                     _state = State.Observing;
                     FlashSuspect();
+                    PlayDiscoverSfx();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 到达观察距离，开始观察玩家 (距离={distToPlayer:F1})");
                     break;
                 }
@@ -193,6 +204,7 @@ public class MonsterAI : MonoBehaviour
                 transform.position = Vector2.MoveTowards(myPos, playerPos - dir * _approachDistance, _moveSpeed * Time.deltaTime);
                 _currentDetectionValue += _detectionFillRatePerSecond * Time.deltaTime;
                 TryTriggerDetectionFull();
+                TryPlayMoveSfx();
                 break;
 
             case State.Observing:
@@ -216,18 +228,48 @@ public class MonsterAI : MonoBehaviour
                     God.Instance?.Get<GameProcessManager>()?.RegisterSpotting(_monster);
                     PlayDiscoverShake();
                     FlashSuspect();
+                    PlayDiscoverSfx();
                     if (debugLog) Debug.Log($"[MonsterAI] {gameObject.name} 玩家再次进入探测范围，重新开始跟随 (距离={distToPlayer:F1})");
                 }
                 break;
         }
     }
 
-    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值；闪一下 bark。仅在 Approaching/Observing 中累积后调用。</summary>
+    /// <summary>发现玩家时播放音效。</summary>
+    private void PlayDiscoverSfx()
+    {
+        if (_discoverSfx != null)
+            God.Instance?.Get<AudioManager>()?.PlaySfx(_discoverSfx);
+    }
+
+    /// <summary>识破玩家时播放音效。</summary>
+    private void PlaySpottedSfx()
+    {
+        if (_spottedSfx != null)
+            God.Instance?.Get<AudioManager>()?.PlaySfx(_spottedSfx);
+    }
+
+    /// <summary>移动时按间隔随机播放 move 音效（循环）。</summary>
+    private void TryPlayMoveSfx()
+    {
+        if (_moveSfxList == null || _moveSfxList.Length == 0 || _moveSfxInterval <= 0f) return;
+        _moveSfxCooldown -= Time.deltaTime;
+        if (_moveSfxCooldown <= 0f)
+        {
+            _moveSfxCooldown = _moveSfxInterval;
+            var clip = _moveSfxList[Random.Range(0, _moveSfxList.Length)];
+            if (clip != null)
+                God.Instance?.Get<AudioManager>()?.PlaySfx(clip);
+        }
+    }
+
+    /// <summary>识破值满时：进入暴露状态、增加玩家暴露值并重置识破值；闪一下 bark、播识破音效。仅在 Approaching/Observing 中累积后调用。</summary>
     private void TryTriggerDetectionFull()
     {
         if (_currentDetectionValue < _detectionMaxValue) return;
         _currentDetectionValue = _detectionMaxValue;
         FlashBark();
+        PlaySpottedSfx();
         var process = God.Instance?.Get<GameProcessManager>();
         if (process != null)
             process.EnterSpotted();

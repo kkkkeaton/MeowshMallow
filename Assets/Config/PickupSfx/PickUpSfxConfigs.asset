@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e88dfc1d8ed2949a1500fcab310727, type: 3}
+  m_Name: PickUpSfxConfigs
+  m_EditorClassIdentifier: Assembly-CSharp::ItemTypeAudioConfig
+  entries:
+  - itemTypeId: 2
+    pickupSfx: {fileID: 8300000, guid: 8994601ca0de7cb8e95ace1ced9075a8, type: 3}
+    dropSfx: {fileID: 8300000, guid: b20407a1e1be45a39aa2a9285a93978b, type: 3}
+  - itemTypeId: 1
+    pickupSfx: {fileID: 8300000, guid: 7d8669ca35620842bb40cea5ccf9281f, type: 3}
+    dropSfx: {fileID: 8300000, guid: b20407a1e1be45a39aa2a9285a93978b, type: 3}
