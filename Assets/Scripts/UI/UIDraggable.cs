@@ -107,6 +107,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             _pivotStartInParent = _dragClone.localPosition;
             if (_rotateAction != null)
                 _rotateAction.Enable();
+            God.Instance?.Get<UIManager>()?.SetRotateHintVisible(true, "旋转");
         }
     }
 
@@ -190,6 +191,7 @@ public class UIDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         if (_rotateAction != null)
             _rotateAction.Disable();
+        God.Instance?.Get<UIManager>()?.SetRotateHintVisible(false);
         if (_dragClone != null)
         {
             Destroy(_dragClone.gameObject);

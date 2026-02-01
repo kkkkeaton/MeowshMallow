@@ -69,6 +69,9 @@ namespace MeowshMallow
         private int _waterSourceTriggerCount;
         private float _footstepSfxCooldown;
 
+        /// <summary>当前是否处于水源区域内（用于 UI 显示 E「染色」等）。</summary>
+        public bool IsNearWaterSource => _waterSourceTriggerCount > 0;
+
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// UI 管理器：启动时在场景中实例化规定的 MainUI 预制体，并开放通过预制体创建/销毁 UI 的方法。
@@ -34,6 +35,8 @@ public class UIManager : MonoBehaviour
     private GameObject _pickableHint;
     /// <summary>可暗杀提示物体（MainUI 下名为 "F" 的物体，自动查找）。</summary>
     private GameObject _assassinationHint;
+    /// <summary>旋转提示物体（MainUI 下名为 "R" 的物体，拖拽物品时显示）。</summary>
+    private GameObject _rotateHint;
 
     private static readonly Color ExposedFillColorAtZero = new Color(0.498f, 0.745f, 0.635f); // #7fbea2
     private static readonly Color ExposedFillColorAtMid = new Color(0.706f, 0.439f, 0.184f);   // #b4702f 50%
@@ -75,6 +78,7 @@ public class UIManager : MonoBehaviour
 
         SetPickableHintVisible(false);
         SetAssassinationHintVisible(false);
+        SetRotateHintVisible(false);
     }
 
     private void Start()
@@ -177,31 +181,61 @@ public class UIManager : MonoBehaviour
         God.Instance?.Get<ComposableManager>()?.ClearAllPlayerComposable();
     }
 
-    /// <summary>从 MainUI 子物体中按名称查找「E」「F」并缓存为范围提示引用。</summary>
+    /// <summary>从 MainUI 子物体中按名称查找「E」「F」「R」并缓存为范围提示引用。</summary>
     private void RefreshRangeHintRefs()
     {
         _pickableHint = null;
         _assassinationHint = null;
+        _rotateHint = null;
         if (_mainUIInstance == null) return;
         foreach (Transform t in _mainUIInstance.GetComponentsInChildren<Transform>(true))
         {
             if (t.name == "E") _pickableHint = t.gameObject;
             else if (t.name == "F") _assassinationHint = t.gameObject;
+            else if (t.name == "R") _rotateHint = t.gameObject;
         }
     }
 
-    /// <summary>显示/隐藏「可拾取」提示物体（由 PlayerRangeDetector 根据范围内有无 PickableItem 调用）。</summary>
-    public void SetPickableHintVisible(bool visible)
+    /// <summary>显示/隐藏「可拾取」提示物体；显示时若传入 text 则同步设置 E 下子物体中第一个 Text 的内容。</summary>
+    public void SetPickableHintVisible(bool visible, string text = null)
     {
-        if (_pickableHint != null)
-            _pickableHint.SetActive(visible);
+        if (_pickableHint == null) return;
+        _pickableHint.SetActive(visible);
+        if (visible && !string.IsNullOrEmpty(text))
+            SetHintChildText(_pickableHint.transform, text);
     }
 
-    /// <summary>显示/隐藏「可暗杀」提示物体（由 PlayerRangeDetector 根据范围内有无敌人调用）。</summary>
-    public void SetAssassinationHintVisible(bool visible)
+    /// <summary>显示/隐藏「可暗杀」提示物体；显示时若传入 text 则同步设置 F 下子物体中第一个 Text 的内容。</summary>
+    public void SetAssassinationHintVisible(bool visible, string text = null)
     {
-        if (_assassinationHint != null)
-            _assassinationHint.SetActive(visible);
+        if (_assassinationHint == null) return;
+        _assassinationHint.SetActive(visible);
+        if (visible && !string.IsNullOrEmpty(text))
+            SetHintChildText(_assassinationHint.transform, text);
+    }
+
+    /// <summary>显示/隐藏「旋转」提示物体（与 E/F 同区域，拖拽物品时显示）；显示时若传入 text 则同步设置 R 下子物体中第一个 Text 的内容。</summary>
+    public void SetRotateHintVisible(bool visible, string text = null)
+    {
+        if (_rotateHint == null) return;
+        _rotateHint.SetActive(visible);
+        if (visible && !string.IsNullOrEmpty(text))
+            SetHintChildText(_rotateHint.transform, text);
+    }
+
+    /// <summary>在指定节点下查找第一个 Text 或 TextMeshProUGUI 子物体并设置其文本。</summary>
+    private static void SetHintChildText(Transform root, string text)
+    {
+        if (root == null) return;
+        var tmp = root.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (tmp != null)
+        {
+            tmp.text = text;
+            return;
+        }
+        var uiText = root.GetComponentInChildren<Text>(true);
+        if (uiText != null)
+            uiText.text = text;
     }
 
     /// <summary>遍历 MainUI 所有子物体，查找并缓存 Slider 引用。</summary>

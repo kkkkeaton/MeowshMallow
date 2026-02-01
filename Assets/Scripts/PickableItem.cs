@@ -53,10 +53,8 @@ public class PickableItem : MonoBehaviour
         God.Instance?.Get<AudioManager>()?.PlayPickupSfxForItemType(ItemTypeId);
 
         Backpack backpack = God.Instance?.Get<Backpack>();
-        if (backpack != null)
-            backpack.AddPartItem(_composable);
-
-        Destroy(gameObject);
+        if (backpack != null && backpack.AddPartItem(_composable))
+            Destroy(gameObject);
     }
 
     /// <summary>获取/设置本物体对应的 Composable（代码用）。</summary>

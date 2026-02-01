@@ -8,6 +8,7 @@ public class PlayerRangeDetector : MonoBehaviour
 {
     private MonsterManager _monsterManager;
     private UIManager _uiManager;
+    private MeowshMallow.PlayerMovement _playerMovement;
 
     private void Awake()
     {
@@ -20,13 +21,30 @@ public class PlayerRangeDetector : MonoBehaviour
             _monsterManager = FindObjectOfType<MonsterManager>();
         if (_uiManager == null)
             _uiManager = FindObjectOfType<UIManager>();
+        _playerMovement = GetComponent<MeowshMallow.PlayerMovement>();
     }
 
     private void Update()
     {
         if (_uiManager == null) return;
-        _uiManager.SetPickableHintVisible(HasPickableInRange());
-        _uiManager.SetAssassinationHintVisible(HasEnemyInAttackRange());
+
+        bool showE;
+        string eText;
+        if (_playerMovement != null && _playerMovement.IsNearWaterSource)
+        {
+            showE = true;
+            eText = "染色";
+        }
+        else
+        {
+            var closestPickable = GetClosestPickableInRange();
+            showE = closestPickable != null;
+            eText = showE ? (closestPickable.Composable != null ? closestPickable.Composable.name : "拾取") : null;
+        }
+        _uiManager.SetPickableHintVisible(showE, eText);
+
+        var closestEnemy = GetClosestEnemyInAttackRange();
+        _uiManager.SetAssassinationHintVisible(closestEnemy != null, closestEnemy != null ? "吞噬" : null);
     }
 
     /// <summary>拾取范围内是否存在任意 PickableItem。</summary>
